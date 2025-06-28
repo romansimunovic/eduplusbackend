@@ -88,28 +88,14 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot Maven Plugin for packaging and running Spring Boot applications -->
+            <!-- Spring Boot Maven Plugin for building and running the Spring Boot application -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
                 <configuration>
-                    <!-- Ovdje ne koristimo 'classifier' jer nismo dodavali specifičan klasifikator za JAR -->
+                    <!-- Removing classifier configuration as it's not needed -->
                 </configuration>
-            </plugin>
-
-            <!-- Maven Jar Plugin with no classifier -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
