@@ -10,49 +10,41 @@
     <packaging>jar</packaging>
 
     <properties>
-        <!-- Verzija Jave 16 -->
         <java.version>16</java.version>
-        <!-- Verzija Spring Boot-a -->
         <spring.boot.version>2.7.10</spring.boot.version>
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Starter Web for creating REST APIs -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- Spring Boot Starter Data JPA for database access -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- Spring Boot Starter Validation for input validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- PostgreSQL Driver for connecting to PostgreSQL database -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.5.0</version>
         </dependency>
 
-        <!-- Spring Boot Starter Thymeleaf for HTML templates -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- Spring Boot DevTools for hot reload during development -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -60,7 +52,6 @@
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- Spring Boot Starter Test for testing the application -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -68,7 +59,6 @@
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- Swagger 3 (OpenAPI 3) -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
@@ -78,7 +68,6 @@
 
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin for Java 16 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -90,11 +79,27 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot Maven Plugin for packaging and running Spring Boot applications -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
+                <configuration>
+                    <classifier>exec</classifier>
+                </configuration>
+            </plugin>
+
+            <!-- Dodaj maven-jar-plugin za izgradnju JAR datoteke -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
