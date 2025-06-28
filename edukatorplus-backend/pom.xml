@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.edukatorplus</groupId>
@@ -14,8 +14,6 @@
         <java.version>16</java.version>
         <!-- Verzija Spring Boot-a -->
         <spring.boot.version>2.7.10</spring.boot.version>
-        <!-- Verzija Spring Dependency Management -->
-        <spring.dependency.management.version>1.0.11.RELEASE</spring.dependency.management.version>
     </properties>
 
     <dependencies>
@@ -44,7 +42,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.0</version> <!-- Verzija PostgreSQL driver-a -->
+            <version>42.5.0</version>
         </dependency>
 
         <!-- Spring Boot Starter Thymeleaf for HTML templates -->
@@ -74,14 +72,7 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version> <!-- Verzija Swagger 3 -->
-        </dependency>
-
-        <!-- Swagger Annotations for API Documentation -->
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.6.0</version>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 
@@ -93,9 +84,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>16</source> <!-- Postavljanje source verzije na Java 16 -->
-                    <target>16</target> <!-- Postavljanje target verzije na Java 16 -->
-                    <release>16</release> <!-- Osigurava kompatibilnost s Java 16 -->
+                    <source>16</source>
+                    <target>16</target>
+                    <release>16</release>
                 </configuration>
             </plugin>
 
