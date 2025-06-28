@@ -1,17 +1,23 @@
-# Koristi službeni OpenJDK 16 image
-FROM openjdk:16-jdk-alpine AS build
+# 1. Koristi službenu Maven sliku za build (Java 16)
+FROM maven:3.8.4-openjdk-16-slim AS build
 
-# Postavi radni direktorij unutar kontejnera
+# 2. Postavi radni direktorij unutar kontejnera
 WORKDIR /app
 
-# Kopiraj Maven build datoteku i pakete
+# 3. Kopiraj cijeli projekt u Docker image
 COPY . /app
 
-# Pokreni Maven build kako bi se stvorila JAR datoteka
+# 4. Pokreni Maven build kako bi se stvorila JAR datoteka
 RUN mvn clean package -DskipTests
 
-# Kopiraj generiranu JAR datoteku u aplikaciju
-COPY target/edukatorplus-backend-1.0-SNAPSHOT.jar /app/eduplus-backend.jar
+# 5. Drugi stage za stvaranje finalnog image-a
+FROM openjdk:16-jdk-alpine
 
-# Pokreni aplikaciju
+# 6. Postavi radni direktorij unutar kontejnera
+WORKDIR /app
+
+# 7. Kopiraj generiranu JAR datoteku iz prethodnog sloja u finalni image
+COPY --from=build /app/target/edukatorplus-backend-1.0-SNAPSHOT.jar /app/eduplus-backend.jar
+
+# 8. Pokreni aplikaciju
 ENTRYPOINT ["java", "-jar", "/app/eduplus-backend.jar"]
