@@ -1,5 +1,5 @@
 # 1. Koristi sliku koja ima Maven i JDK 16 za buildanje
-FROM maven:3.8.4-jdk-16-slim AS build
+FROM openjdk:16-jdk-alpine AS build
 
 # 2. Postavi radni direktorij unutar kontejnera
 WORKDIR /app
