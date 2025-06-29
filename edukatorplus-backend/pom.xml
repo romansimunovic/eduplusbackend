@@ -74,27 +74,30 @@
                 </configuration>
             </plugin>
 
-            <!-- Maven Jar Plugin to add Main-Class to the JAR manifest -->
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-jar-plugin</artifactId>
-    <version>3.1.0</version>
-    <configuration>
-        <archive>
-            <manifestEntries>
-                <!-- Ispravna putanja do glavne klase Start -->
-                <Main-Class>com.edukatorplus.eduplusbackend.Start</Main-Class>
-            </manifestEntries>
-        </archive>
-    </configuration>
-</plugin>
-
-
-            <!-- Spring Boot Maven Plugin -->
+            <!-- Spring Boot Maven Plugin - handles the main class entry automatically -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
+                <configuration>
+                    <mainClass>com.edukatorplus.eduplusbackend.Start</mainClass>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Jar Plugin to add Main-Class to the JAR manifest -->
+            <!-- Only needed if you need a custom jar; Spring Boot plugin already does this -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <!-- Main-Class entry is now handled by Spring Boot plugin -->
+                            <Main-Class>com.edukatorplus.eduplusbackend.Start</Main-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>
