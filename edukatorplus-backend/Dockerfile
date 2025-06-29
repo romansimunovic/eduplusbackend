@@ -1,5 +1,5 @@
-# 1. Koristi Maven sliku za build (Java 16)
-FROM maven:3.8.4-openjdk-16-slim AS build
+# 1. Koristi Maven sliku za build (Java 11 ili 17)
+FROM maven:3.8.4-openjdk-11-slim AS build
 
 # 2. Postavi radni direktorij unutar kontejnera
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY . /app
 RUN mvn clean package -DskipTests
 
 # 5. Drugi stage za stvaranje finalnog image-a
-FROM openjdk:16-jdk-slim
+FROM openjdk:17-jdk-alpine
 
 # 6. Postavi radni direktorij unutar kontejnera
 WORKDIR /app
