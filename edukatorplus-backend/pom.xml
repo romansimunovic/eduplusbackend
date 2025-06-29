@@ -75,18 +75,20 @@
             </plugin>
 
             <!-- Maven Jar Plugin to add Main-Class to the JAR manifest -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Main-Class>com.edukatorplus.eduplusbackend.EduplusBackendApplication</Main-Class>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <version>3.1.0</version>
+    <configuration>
+        <archive>
+            <manifestEntries>
+                <!-- Ispravna putanja do glavne klase Start -->
+                <Main-Class>com.edukatorplus.eduplusbackend.Start</Main-Class>
+            </manifestEntries>
+        </archive>
+    </configuration>
+</plugin>
+
 
             <!-- Spring Boot Maven Plugin -->
             <plugin>
