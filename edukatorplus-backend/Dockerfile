@@ -1,17 +1,17 @@
-# 1. Koristi Maven sliku za build (Java 17)
-FROM maven:3.8.4-openjdk-17-slim AS build
+# 1. Koristi Maven sliku za build (Java 16)
+FROM maven:3.8.4-openjdk-16-slim AS build
 
 # 2. Postavi radni direktorij unutar kontejnera
 WORKDIR /app
 
 # 3. Kopiraj cijeli projekt u Docker image
-COPY . /app
+COPY ./edukatorplus-backend /app
 
 # 4. Pokreni Maven build kako bi se stvorila JAR datoteka
 RUN mvn clean package -DskipTests
 
 # 5. Drugi stage za stvaranje finalnog image-a
-FROM openjdk:17-jdk-alpine
+FROM openjdk:16-jdk-alpine
 
 # 6. Postavi radni direktorij unutar kontejnera
 WORKDIR /app
