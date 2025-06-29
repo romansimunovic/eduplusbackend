@@ -2,8 +2,8 @@ services:
   - type: web
     name: eduplus-backend
     env: java
-    buildCommand: 'mvn clean package -DskipTests'   # Ovdje dodajemo Maven build
-    startCommand: 'java -jar target/eduplus-backend-1.0-SNAPSHOT.jar'
-    branch: main
-    plan: free
-    waitUntilReady: true
+    buildCommand: 'mvn clean package -DskipTests'  # Maven build komanda
+    startCommand: 'java -jar target/eduplus-backend-1.0-SNAPSHOT.jar'  # Pokretanje JAR datoteke
+    branch: main  # Glavna grana za deploy
+    plan: free  # Plan koji koristiš (free je besplatna opcija)
+    waitUntilReady: true  # Čekaj dok aplikacija ne postane spremna
