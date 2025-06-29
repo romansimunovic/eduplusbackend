@@ -7,8 +7,8 @@ WORKDIR /usr/src/app
 # 3. Kopiraj cijeli projekt u Docker image
 COPY . /usr/src/app
 
-# 4. Postavljanje WORKDIR na direktorij sa 'project files'
-WORKDIR "/usr/src/app/project files"  # Ovdje stavljamo cijelu putanju u navodnike zbog razmaka
+# 4. Postavljanje WORKDIR na ispravan direktorij s POM
+WORKDIR /usr/src/app/edukatorplus-backend  # Ovdje postavljamo putanju na ispravan direktorij
 
 # 5. Pokreni Maven build kako bi se stvorila JAR datoteka
 RUN mvn clean package -DskipTests
@@ -20,7 +20,7 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /usr/src/app
 
 # 8. Kopiraj generiranu JAR datoteku iz prethodnog sloja u finalni image
-COPY --from=build /usr/src/app/project\ files/target/edukatorplus-backend-1.0-SNAPSHOT.jar /usr/src/app/eduplus-backend.jar
+COPY --from=build /usr/src/app/edukatorplus-backend/target/edukatorplus-backend-1.0-SNAPSHOT.jar /usr/src/app/eduplus-backend.jar
 
 # 9. Pokreni aplikaciju
 ENTRYPOINT ["java", "-jar", "/usr/src/app/eduplus-backend.jar"]
