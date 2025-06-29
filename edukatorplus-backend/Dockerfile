@@ -2,10 +2,10 @@
 FROM maven:3.8.4-openjdk-17-slim AS build
 
 # 2. Postavi radni direktorij unutar kontejnera
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # 3. Kopiraj cijeli projekt u Docker image
-COPY . /app
+COPY . /usr/src/app
 
 # 4. Pokreni Maven build kako bi se stvorila JAR datoteka
 RUN mvn clean package -DskipTests
@@ -14,10 +14,10 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17-jdk-alpine
 
 # 6. Postavi radni direktorij unutar kontejnera
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # 7. Kopiraj generiranu JAR datoteku iz prethodnog sloja u finalni image
-COPY --from=build /app/target/edukatorplus-backend-1.0-SNAPSHOT.jar /app/eduplus-backend.jar
+COPY --from=build /usr/src/app/target/edukatorplus-backend-1.0-SNAPSHOT.jar /usr/src/app/eduplus-backend.jar
 
 # 8. Pokreni aplikaciju
-ENTRYPOINT ["java", "-jar", "/app/eduplus-backend.jar"]
+ENTRYPOINT ["java", "-jar", "/usr/src/app/eduplus-backend.jar"]
