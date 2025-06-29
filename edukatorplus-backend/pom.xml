@@ -74,6 +74,20 @@
                 </configuration>
             </plugin>
 
+            <!-- Maven Jar Plugin to add Main-Class to the JAR manifest -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>com.edukatorplus.EdukatorplusBackendApplication</Main-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
             <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -82,4 +96,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
