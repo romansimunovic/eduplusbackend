@@ -11,7 +11,7 @@ COPY . /app
 RUN mvn clean package -DskipTests
 
 # 5. Drugi stage za stvaranje finalnog image-a
-FROM openjdk:16-jdk-alpine
+FROM openjdk:16-jdk-slim
 
 # 6. Postavi radni direktorij unutar kontejnera
 WORKDIR /app
