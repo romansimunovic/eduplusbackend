@@ -1,5 +1,5 @@
-# 1. Koristi službenu Maven sliku za build (Java 16)
-FROM maven:3.8.4-openjdk-16 AS build
+# 1. Koristi Maven sliku za build (Java 16)
+FROM maven:3.9.0-openjdk-16 AS build
 
 # 2. Postavi radni direktorij unutar kontejnera
 WORKDIR /app
