@@ -74,7 +74,7 @@
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <Main-Class>com.edukatorplus.EdukatorplusBackendApplication</Main-Class>
+                            <Main-Class>com.edukatorplus.EdukatorPlusBackendApplication</Main-Class>
                         </manifestEntries>
                     </archive>
                 </configuration>
