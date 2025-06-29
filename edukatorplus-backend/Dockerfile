@@ -5,7 +5,7 @@ FROM maven:3.8.4-openjdk-17-slim AS build
 WORKDIR /app
 
 # 3. Kopiraj cijeli projekt u Docker image
-COPY . /app
+COPY . /app/
 
 # 4. Pokreni Maven build kako bi se stvorila JAR datoteka
 RUN mvn clean package -DskipTests
