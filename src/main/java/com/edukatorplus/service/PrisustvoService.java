@@ -71,6 +71,17 @@ public class PrisustvoService {
         return new PrisustvoDTO(prisustvo.getId(), polaznik.getId(), radionica.getId(), prisustvo.getStatus());
     }
 
+    public PrisustvoDTO getPrisustvo(Long id) {
+    Prisustvo prisustvo = prisustvoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Prisustvo nije pronađeno"));
+    return new PrisustvoDTO(
+            prisustvo.getId(),
+            prisustvo.getPolaznik().getId(),
+            prisustvo.getRadionica().getId(),
+            prisustvo.getStatus()
+    );
+}
+
     // Brisanje prisustva
     public void deletePrisustvo(Long id) {
         prisustvoRepository.deleteById(id);
