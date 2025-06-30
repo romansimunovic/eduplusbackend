@@ -19,7 +19,7 @@ public interface PrisustvoRepository extends JpaRepository<Prisustvo, Long> {
     List<Prisustvo> findByStatus(String status);
 
     // Pretraga prisustva prema polazniku i radionici
-    List<Prisustvo> findByPolaznikIdAndRadionicaId(Long polaznikId, Long radionicaId);
+    List<Prisustvo> findByStatus(StatusPrisustva status);
 
     public void deleteByPolaznikId(Long id);
 }
