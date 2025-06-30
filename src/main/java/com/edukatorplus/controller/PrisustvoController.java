@@ -1,6 +1,7 @@
 package com.edukatorplus.controller;
 
 import com.edukatorplus.dto.PrisustvoDTO;
+import com.edukatorplus.dto.PrisustvoViewDTO;
 import com.edukatorplus.service.PrisustvoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,20 +21,18 @@ public class PrisustvoController {
 
     @GetMapping
     @Operation(summary = "Dohvati sva prisustva", responses = {
-            @ApiResponse(responseCode = "200", description = "Prisustva pronađena"),
-            @ApiResponse(responseCode = "404", description = "Nema prisustava")
+            @ApiResponse(responseCode = "200", description = "Prisustva pronađena")
     })
     public List<PrisustvoDTO> getAllPrisustva() {
         return prisustvoService.getAllPrisustva();
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Dohvati prisustvo prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Prisustvo pronađeno"),
-            @ApiResponse(responseCode = "404", description = "Prisustvo s tim ID-om nije pronađeno")
+    @GetMapping("/view")
+    @Operation(summary = "Dohvati prikaz prisustava (ime, radionica, status)", responses = {
+            @ApiResponse(responseCode = "200", description = "Formatirani podaci o prisustvima")
     })
-    public PrisustvoDTO getPrisustvo(@PathVariable Long id) {
-        return prisustvoService.getPrisustvo(id);
+    public List<PrisustvoViewDTO> getAllPrisustvaView() {
+        return prisustvoService.getAllForDisplay();
     }
 
     @PostMapping
