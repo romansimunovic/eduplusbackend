@@ -15,9 +15,11 @@ public class Polaznik {
     private String prezime;
     private String email;
     private Integer godinaRođenja;
-    
 
-    // Konstruktor koji prima sve potrebne podatke
+    public Polaznik() {
+        // obavezan prazan konstruktor za JPA
+    }
+
     public Polaznik(String ime, String prezime, String email, Integer godinaRođenja) {
         this.ime = ime;
         this.prezime = prezime;
