@@ -9,22 +9,48 @@ public class Prisustvo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long polaznikId;
-    private Long radionicaId;
-
     @Enumerated(EnumType.STRING)
     private StatusPrisustva status;
 
+    @ManyToOne
+    @JoinColumn(name = "polaznik_id")
+    private Polaznik polaznik;
+
+    @ManyToOne
+    @JoinColumn(name = "radionica_id")
+    private Radionica radionica;
+
     // Getteri i setteri
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
-    public Long getPolaznikId() { return polaznikId; }
-    public void setPolaznikId(Long polaznikId) { this.polaznikId = polaznikId; }
+    public Long getId() {
+        return id;
+    }
 
-    public Long getRadionicaId() { return radionicaId; }
-    public void setRadionicaId(Long radionicaId) { this.radionicaId = radionicaId; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public StatusPrisustva getStatus() { return status; }
-    public void setStatus(StatusPrisustva status) { this.status = status; }
+    public StatusPrisustva getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusPrisustva status) {
+        this.status = status;
+    }
+
+    public Polaznik getPolaznik() {
+        return polaznik;
+    }
+
+    public void setPolaznik(Polaznik polaznik) {
+        this.polaznik = polaznik;
+    }
+
+    public Radionica getRadionica() {
+        return radionica;
+    }
+
+    public void setRadionica(Radionica radionica) {
+        this.radionica = radionica;
+    }
 }
