@@ -48,9 +48,5 @@ public class RadionicaController {
         radionicaService.deleteRadionica(id);
     }
 
-    @GetMapping("/fix-datum")
-public void popraviDatumKolonu() {
-    radionicaService.dodajDatumKolonuAkoNePostoji();
-}
 
 }
