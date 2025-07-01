@@ -47,4 +47,10 @@ public class RadionicaController {
     public void deleteRadionica(@PathVariable Long id) {
         radionicaService.deleteRadionica(id);
     }
+
+    @GetMapping("/fix-datum")
+public void popraviDatumKolonu() {
+    radionicaService.dodajDatumKolonuAkoNePostoji();
+}
+
 }
