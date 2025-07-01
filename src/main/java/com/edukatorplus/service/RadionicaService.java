@@ -5,7 +5,9 @@ import com.edukatorplus.model.Radionica;
 import com.edukatorplus.repository.RadionicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,4 +48,27 @@ public class RadionicaService {
     public void deleteRadionica(Long id) {
         radionicaRepository.deleteById(id);
     }
+
+@Service
+public class RadionicaService {
+
+    @Autowired
+    private RadionicaRepository radionicaRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    // ... tvoje postojeće metode
+
+    @Transactional
+    public void dodajDatumKolonuAkoNePostoji() {
+        try {
+            entityManager.createNativeQuery("ALTER TABLE radionica ADD COLUMN datum date").executeUpdate();
+            System.out.println("✅ Kolona 'datum' dodana!");
+        } catch (Exception e) {
+            System.out.println("⚠️ Kolona 'datum' već postoji ili greška: " + e.getMessage());
+        }
+    }
+}
+
 }
