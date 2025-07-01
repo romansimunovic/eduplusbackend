@@ -19,45 +19,31 @@ public class RadionicaController {
     private RadionicaService radionicaService;
 
     @GetMapping
-    @Operation(summary = "Dohvati sve radionice", responses = {
-            @ApiResponse(responseCode = "200", description = "Radionice pronađene"),
-            @ApiResponse(responseCode = "404", description = "Nema radionica")
-    })
+    @Operation(summary = "Dohvati sve radionice")
     public List<RadionicaDTO> getAllRadionice() {
         return radionicaService.getAllRadionice();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Dohvati radionicu prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Radionica pronađena"),
-            @ApiResponse(responseCode = "404", description = "Radionica s tim ID-om nije pronađena")
-    })
+    @Operation(summary = "Dohvati radionicu prema ID-u")
     public RadionicaDTO getRadionica(@PathVariable Long id) {
         return radionicaService.getRadionica(id);
     }
 
     @PostMapping
-    @Operation(summary = "Kreiraj novu radionicu", responses = {
-            @ApiResponse(responseCode = "201", description = "Radionica uspješno kreirana")
-    })
-    public RadionicaDTO createRadionica(@RequestBody RadionicaDTO radionicaDTO) {
-        return radionicaService.saveRadionica(radionicaDTO);
+    @Operation(summary = "Kreiraj novu radionicu")
+    public RadionicaDTO createRadionica(@RequestBody RadionicaDTO dto) {
+        return radionicaService.saveRadionica(dto);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Ažuriraj radionicu prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Radionica uspješno ažurirana"),
-            @ApiResponse(responseCode = "404", description = "Radionica s tim ID-om nije pronađena")
-    })
-    public RadionicaDTO updateRadionica(@PathVariable Long id, @RequestBody RadionicaDTO radionicaDTO) {
-        return radionicaService.updateRadionica(id, radionicaDTO);
+    @Operation(summary = "Ažuriraj radionicu prema ID-u")
+    public RadionicaDTO updateRadionica(@PathVariable Long id, @RequestBody RadionicaDTO dto) {
+        return radionicaService.updateRadionica(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Obriši radionicu prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Radionica uspješno obrisana"),
-            @ApiResponse(responseCode = "404", description = "Radionica s tim ID-om nije pronađena")
-    })
+    @Operation(summary = "Obriši radionicu prema ID-u")
     public void deleteRadionica(@PathVariable Long id) {
         radionicaService.deleteRadionica(id);
     }
