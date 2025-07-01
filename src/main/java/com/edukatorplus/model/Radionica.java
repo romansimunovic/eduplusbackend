@@ -1,9 +1,7 @@
 package com.edukatorplus.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 public class Radionica {
@@ -11,14 +9,20 @@ public class Radionica {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String naziv;
 
-    // Konstruktor
+    @Column(nullable = false)
+    private LocalDate datum;
+
+    // Prazan konstruktor
     public Radionica() {
     }
 
-    public Radionica(String naziv) {
+    // Konstruktor s parametrima
+    public Radionica(String naziv, LocalDate datum) {
         this.naziv = naziv;
+        this.datum = datum;
     }
 
     // Getteri i setteri
@@ -36,5 +40,13 @@ public class Radionica {
 
     public void setNaziv(String naziv) {
         this.naziv = naziv;
+    }
+
+    public LocalDate getDatum() {
+        return datum;
+    }
+
+    public void setDatum(LocalDate datum) {
+        this.datum = datum;
     }
 }
