@@ -37,6 +37,12 @@
             <version>42.5.0</version>
         </dependency>
 
+             <dependency>
+  <groupId>com.fasterxml.jackson.datatype</groupId>
+  <artifactId>jackson-datatype-jsr310</artifactId>
+</dependency>
+
+
         <!-- ✅ MODERNI SWAGGER -->
         <dependency>
             <groupId>org.springdoc</groupId>
