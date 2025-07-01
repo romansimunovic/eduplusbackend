@@ -49,26 +49,5 @@ public class RadionicaService {
         radionicaRepository.deleteById(id);
     }
 
-@Service
-public class RadionicaService {
-
-    @Autowired
-    private RadionicaRepository radionicaRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    // ... tvoje postojeće metode
-
-    @Transactional
-    public void dodajDatumKolonuAkoNePostoji() {
-        try {
-            entityManager.createNativeQuery("ALTER TABLE radionica ADD COLUMN datum date").executeUpdate();
-            System.out.println("✅ Kolona 'datum' dodana!");
-        } catch (Exception e) {
-            System.out.println("⚠️ Kolona 'datum' već postoji ili greška: " + e.getMessage());
-        }
-    }
-}
 
 }
