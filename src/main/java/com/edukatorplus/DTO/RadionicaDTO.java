@@ -1,4 +1,6 @@
 package com.edukatorplus.dto;
 
-public record RadionicaDTO(Long id, String naziv) {
+import java.time.LocalDate;
+
+public record RadionicaDTO(Long id, String naziv, LocalDate datum) {
 }
