@@ -1,6 +1,6 @@
 # EdukatorPlus Backend
 
-**EdukatorPlus** je RESTful backend sustav razvijen u okviru kolegija **Informacijsko-komunikacijska infrastruktura** na Odsjeku za informacijske znanosti Filozofskog fakulteta u Osijeku. Projekt je mentorirao **izv. prof. dr. sc. Tomislav Jakopec**.
+**EdukatorPlus** je RESTful backend sustav razvijen u okviru kolegija **Informacijsko-komunikacijska infrastruktura** na Odsjeku za informacijske znanosti u sklopu diplomskog studija Informacijske tehnologije na  Filozofskom fakultetu u Osijeku. Projekt je mentorirao **izv. prof. dr. sc. Tomislav Jakopec**.
 
 Backend aplikacija implementirana je u Java Spring Boot frameworku te koristi Maven za upravljanje projektom. U aplikaciji su primijenjena znanja stečena i kroz kolegij **Programiranje 2 (P2)** s naglaskom na objektno orijentirano programiranje u Javi.
 
@@ -63,6 +63,6 @@ src/main/java/com/edukatorplus/
 
 ## \:mortar\_board: Akademski kontekst
 
-Ova aplikacija je izrađena kao završni projekt u sklopu kolegija **Informacijsko-komunikacijska infrastruktura** pod mentorstvom **izv. prof. dr. sc. Tomislava Jakopeca**.
+Ova aplikacija je izrađena kao završni projekt u sklopu kolegija **Informacijsko-komunikacijska infrastruktura** uz podršku umjetne inteligencije (ChatGPT Plus) pod mentorstvom **izv. prof. dr. sc. Tomislava Jakopeca**.
 
 ---
