@@ -1,20 +1,65 @@
-# Maven build output
-target/
-
-# Logs
+# Java općenito
+*.class
+*.jar
+*.war
+*.ear
 *.log
 
-# Compiled class files
-*.class
-
-# IntelliJ IDEA files
-.idea/
-*.iml
+# Build mape
+target/
+bin/
 out/
 
-# OS-specific
+# IDE-ovi
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS-specifično
 .DS_Store
 Thumbs.db
 
-# Environment
+# Maven cache (ne mora, ali ako želiš full clean)
+.mvn/timing.properties
+
+# Log fajlovi
+*.log
+
+# Env
 .env
+.env.*
+
+# Radni fajlovi, privremeni, backupi
+*.tmp
+*.bak
+*.swp
+*.orig
+
+# IntelliJ run configs
+*.run/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Linux / Mac OS
+*.out
+
+# Windows
+*.exe
+*.dll
+*.bat
+
+# Lokalni config fajlovi
+application.properties
+application.yml
