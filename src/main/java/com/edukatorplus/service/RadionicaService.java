@@ -5,11 +5,8 @@ import com.edukatorplus.model.Radionica;
 import com.edukatorplus.repository.RadionicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,9 +42,11 @@ public class RadionicaService {
                 .orElse(null);
     }
 
-    public void deleteRadionica(Long id) {
-        radionicaRepository.deleteById(id);
+    public boolean deleteRadionica(Long id) {
+        if (radionicaRepository.existsById(id)) {
+            radionicaRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
-
-
 }
