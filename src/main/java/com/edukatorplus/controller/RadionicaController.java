@@ -87,22 +87,11 @@ public class RadionicaController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Obriši radionicu prema ID-u")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Radionica obrisana"),
-        @ApiResponse(responseCode = "404", description = "Radionica nije pronađena")
-    })
-    public ResponseEntity<Void> deleteRadionica(@PathVariable Long id) {
-        try {
-            boolean deleted = radionicaService.deleteRadionica(id);
-            if (deleted) {
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+    public boolean deleteRadionica(Long id) {
+    if (radionicaRepository.existsById(id)) {
+        radionicaRepository.deleteById(id);
+        return true;
     }
+    return false;
+}
 }
