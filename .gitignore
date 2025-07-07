@@ -1,65 +1,68 @@
-# Java općenito
+# ✨ Java i Spring Boot
 *.class
 *.jar
 *.war
 *.ear
+
+# Build output
+/target/
+/out/
+
+# Logovi
 *.log
-
-# Build mape
-target/
-bin/
-out/
-
-# IDE-ovi
-.idea/
-*.iml
-*.ipr
-*.iws
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 
 # OS-specifično
 .DS_Store
 Thumbs.db
 
-# Maven cache (ne mora, ali ako želiš full clean)
-.mvn/timing.properties
+# IDE konfiguracije
+/.idea/
+/*.iml
+/.vscode/
+/*.suo
+/*.ntvs*
+/*.njsproj
+/*.sln
 
-# Log fajlovi
-*.log
-
-# Env
-.env
-.env.*
-
-# Radni fajlovi, privremeni, backupi
-*.tmp
-*.bak
-*.swp
-*.orig
+# Maven specifično
+/.mvn/
+/mvnw*
+!mvnw
+!mvnw.cmd
 
 # IntelliJ run configs
 *.run/
 
 # NetBeans
 nbproject/private/
-build/
-nbbuild/
-dist/
-nbdist/
-.nb-gradle/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 
-# Linux / Mac OS
-*.out
-
-# Windows
-*.exe
-*.dll
-*.bat
-
-# Lokalni config fajlovi
+# Konfiguracijski fajlovi i env podatci
+/.env
+.env.*
 application.properties
 application.yml
+
+# SQL inicijalizacija (ako koristiš lokalno)
+/src/main/resources/data.sql
+/src/main/resources/schema.sql
+
+# IDE backup & temp fajlovi
+*.tmp
+*.bak
+*.swp
+*.orig
+
+# Build skripte
+gradle-app.setting
+.gradle/
+build/
+
+# Docker, konfiguracije, certifikati
+docker-compose.*
+Dockerfile
+*.pem
