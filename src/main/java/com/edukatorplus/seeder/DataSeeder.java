@@ -1,8 +1,17 @@
-import jakarta.annotation.PostConstruct;
+package com.edukatorplus.seeder;
+
+import javax.annotation.PostConstruct;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ffos.rsimun.model.*;
+
+import com.edukatorplus.model.Polaznik;
+import com.edukatorplus.model.Radionica;
+import com.edukatorplus.model.Prisustvo;
+import com.edukatorplus.model.StatusPrisustva;
+import com.edukatorplus.repository.PolaznikRepository;
+import com.edukatorplus.repository.RadionicaRepository;
+import com.edukatorplus.repository.PrisustvoRepository;
 
 import java.util.*;
 
@@ -11,8 +20,10 @@ public class DataSeeder {
 
     @Autowired
     private PolaznikRepository polaznikRepo;
+
     @Autowired
     private RadionicaRepository radionicaRepo;
+
     @Autowired
     private PrisustvoRepository prisustvoRepo;
 
@@ -20,21 +31,23 @@ public class DataSeeder {
 
     @PostConstruct
     public void init() {
-        // Izbriši stare podatke ako trebaš čist start
+       
         prisustvoRepo.deleteAll();
         polaznikRepo.deleteAll();
         radionicaRepo.deleteAll();
 
-        // 10 radionica
+        // Kreiramo 10 radionica
         List<Radionica> radionice = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             Radionica r = new Radionica();
             r.setNaziv("Radionica " + faker.educator().course());
-            r.setDatum(faker.date().birthday().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+            r.setDatum(faker.date().birthday().toInstant()
+                    .atZone(java.time.ZoneId.systemDefault())
+                    .toLocalDate());
             radionice.add(radionicaRepo.save(r));
         }
 
-        // 30 polaznika
+        // Kreiramo 30 polaznika
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             Polaznik p = new Polaznik();
@@ -43,7 +56,7 @@ public class DataSeeder {
             polaznici.add(polaznikRepo.save(p));
         }
 
-        // Random prisustva
+       
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
                 if (faker.random().nextBoolean()) {
