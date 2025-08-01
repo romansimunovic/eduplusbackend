@@ -31,23 +31,37 @@ public class DataSeeder {
 
     @PostConstruct
     public void init() {
-       
+
+        
         prisustvoRepo.deleteAll();
         polaznikRepo.deleteAll();
         radionicaRepo.deleteAll();
 
-        // Kreiramo 10 radionica
+        //  10 radionica s temama iz neprofitnog sektora
+        List<String> teme = Arrays.asList(
+                "ljudskim pravima",
+                "rodnoj ravnopravnosti",
+                "prevenciji nasilja",
+                "mentalnom zdravlju",
+                "održivom razvoju",
+                "pravima manjina",
+                "digitalnoj sigurnosti",
+                "inkluziji mladih",
+                "zelenim politikama",
+                "građanskom obrazovanju"
+        );
+
         List<Radionica> radionice = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < teme.size(); i++) {
             Radionica r = new Radionica();
-            r.setNaziv("Radionica " + faker.educator().course());
+            r.setNaziv("Radionica o " + teme.get(i));
             r.setDatum(faker.date().birthday().toInstant()
                     .atZone(java.time.ZoneId.systemDefault())
                     .toLocalDate());
             radionice.add(radionicaRepo.save(r));
         }
 
-        // Kreiramo 30 polaznika
+        // Dodajemo 30 polaznika
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             Polaznik p = new Polaznik();
