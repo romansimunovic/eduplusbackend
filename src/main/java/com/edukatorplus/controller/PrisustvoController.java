@@ -1,7 +1,7 @@
 package com.edukatorplus.controller;
 
-import com.edukatorplus.DTO.PrisustvoDTO;
-import com.edukatorplus.DTO.PrisustvoViewDTO;
+import com.edukatorplus.dto.PrisustvoDTO;
+import com.edukatorplus.dto.PrisustvoViewDTO;
 import com.edukatorplus.service.PrisustvoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
