@@ -6,6 +6,7 @@ import com.edukatorplus.repository.PrisustvoRepository;
 import com.edukatorplus.repository.RadionicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,15 +47,16 @@ public class RadionicaService {
                 .orElse(null);
     }
 
+    @Transactional
     public boolean deleteRadionica(Long id) {
         if (!radionicaRepository.existsById(id)) {
             return false;
         }
 
-        // 1. Obriši prisustva vezana uz radionicu
+        // 1. Prvo obriši SVA prisustva povezana s tom radionicom
         prisustvoRepository.deleteByRadionica_Id(id);
 
-        // 2. Obriši radionicu
+        // 2. Zatim obriši samu radionicu
         radionicaRepository.deleteById(id);
 
         return true;
