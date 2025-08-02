@@ -21,29 +21,30 @@ public class RadionicaService {
     private PrisustvoRepository prisustvoRepository;
 
     public RadionicaDTO saveRadionica(RadionicaDTO dto) {
-        Radionica r = new Radionica(dto.naziv(), dto.datum());
+        Radionica r = new Radionica(dto.naziv(), dto.opis(), dto.datum());
         r = radionicaRepository.save(r);
-        return new RadionicaDTO(r.getId(), r.getNaziv(), r.getDatum());
+        return new RadionicaDTO(r.getId(), r.getNaziv(), r.getOpis(), r.getDatum());
     }
 
     public RadionicaDTO updateRadionica(Long id, RadionicaDTO dto) {
         Radionica r = radionicaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Radionica s ID-om " + id + " nije pronađena"));
         r.setNaziv(dto.naziv());
+        r.setOpis(dto.opis());
         r.setDatum(dto.datum());
         r = radionicaRepository.save(r);
-        return new RadionicaDTO(r.getId(), r.getNaziv(), r.getDatum());
+        return new RadionicaDTO(r.getId(), r.getNaziv(), r.getOpis(), r.getDatum());
     }
 
     public List<RadionicaDTO> getAllRadionice() {
         return radionicaRepository.findAll().stream()
-                .map(r -> new RadionicaDTO(r.getId(), r.getNaziv(), r.getDatum()))
+                .map(r -> new RadionicaDTO(r.getId(), r.getNaziv(), r.getOpis(), r.getDatum()))
                 .collect(Collectors.toList());
     }
 
     public RadionicaDTO getRadionica(Long id) {
         return radionicaRepository.findById(id)
-                .map(r -> new RadionicaDTO(r.getId(), r.getNaziv(), r.getDatum()))
+                .map(r -> new RadionicaDTO(r.getId(), r.getNaziv(), r.getOpis(), r.getDatum()))
                 .orElse(null);
     }
 
@@ -53,12 +54,8 @@ public class RadionicaService {
             return false;
         }
 
-        // 1. Prvo obriši SVA prisustva povezana s tom radionicom
         prisustvoRepository.deleteByRadionica_Id(id);
-
-        // 2. Zatim obriši samu radionicu
         radionicaRepository.deleteById(id);
-
         return true;
     }
 }
