@@ -47,14 +47,16 @@ public class RadionicaService {
     }
 
     public boolean deleteRadionica(Long id) {
-        if (radionicaRepository.existsById(id)) {
-            // Prvo obriši sve prisutnosti vezane uz tu radionicu
-            prisustvoRepository.deleteByRadionica_Id(id);
-
-            // Zatim obriši i samu radionicu
-            radionicaRepository.deleteById(id);
-            return true;
+        if (!radionicaRepository.existsById(id)) {
+            return false;
         }
-        return false;
+
+        // 1. Obriši prisustva vezana uz radionicu
+        prisustvoRepository.deleteByRadionica_Id(id);
+
+        // 2. Obriši radionicu
+        radionicaRepository.deleteById(id);
+
+        return true;
     }
 }
