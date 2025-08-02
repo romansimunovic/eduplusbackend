@@ -20,22 +20,43 @@ public class PolaznikService {
     private PrisustvoRepository prisustvoRepository;
 
     private PolaznikDTO toDTO(Polaznik p) {
-        return new PolaznikDTO(p.getId(), p.getIme(), p.getPrezime(), p.getEmail(), p.getGodinaRodenja(),
-                p.getSpol(), p.getTelefon(), p.getGrad(), p.getStatus());
+        return new PolaznikDTO(
+                p.getId(),
+                p.getIme(),
+                p.getPrezime(),
+                p.getEmail(),
+                p.getGodinaRodenja(),
+                p.getSpol(),
+                p.getTelefon(),
+                p.getGrad(),
+                p.getStatus()
+        );
     }
 
     public List<PolaznikDTO> getAll() {
-        return polaznikRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+        return polaznikRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     public PolaznikDTO getById(Long id) {
-        return polaznikRepository.findById(id).map(this::toDTO)
+        return polaznikRepository.findById(id)
+                .map(this::toDTO)
                 .orElseThrow(() -> new RuntimeException("Polaznik s ID-om " + id + " nije pronađen"));
     }
 
     public PolaznikDTO create(PolaznikDTO dto) {
-        Polaznik p = new Polaznik(dto.ime(), dto.prezime(), dto.email(), dto.godinaRodenja(),
-                dto.spol(), dto.telefon(), dto.grad(), dto.status());
+        Polaznik p = new Polaznik(
+                dto.ime(),
+                dto.prezime(),
+                dto.email(),
+                dto.godinaRodenja(),
+                dto.spol(),
+                dto.telefon(),
+                dto.grad(),
+                dto.status()
+        );
         return toDTO(polaznikRepository.save(p));
     }
 
@@ -61,3 +82,4 @@ public class PolaznikService {
         prisustvoRepository.deleteByPolaznik_Id(id);
         polaznikRepository.delete(p);
     }
+}
