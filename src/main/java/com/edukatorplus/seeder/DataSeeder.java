@@ -37,6 +37,7 @@ public class DataSeeder {
     }
 
     public void generateNewData() {
+        // Reset svega
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
@@ -110,14 +111,15 @@ public class DataSeeder {
         // === PRISUSTVA ===
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
-            Collections.shuffle(polaznici);
-            List<Polaznik> odabrani = polaznici.subList(0, 10 + random.nextInt(6)); // 10-15 po radionici
-            for (Polaznik p : odabrani) {
-                Prisustvo pr = new Prisustvo();
-                pr.setRadionica(r);
-                pr.setPolaznik(p);
-                pr.setStatus(randomStatus());
-                prisustva.add(pr);
+            for (Polaznik p : polaznici) {
+                // 70% šansa da polaznik bude na ovoj radionici
+                if (random.nextDouble() < 0.7) {
+                    Prisustvo pr = new Prisustvo();
+                    pr.setRadionica(r);
+                    pr.setPolaznik(p);
+                    pr.setStatus(randomStatus());
+                    prisustva.add(pr);
+                }
             }
         }
 
