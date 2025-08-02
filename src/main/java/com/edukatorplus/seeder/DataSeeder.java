@@ -63,19 +63,18 @@ public class DataSeeder {
             String kontekst = konteksti.get(random.nextInt(konteksti.size()));
             kombinacije.add("Radionica o " + tema + " " + kontekst);
         }
-
         List<Radionica> radionice = kombinacije.stream().map(naziv -> {
-            String tema = naziv.split(" o ")[1].split(" ")[0];
-            String kontekst = naziv.substring(naziv.lastIndexOf(" "));
-
+            
+            String[] parts = naziv.replace("Radionica o ", "").split(" ", 2);
+            String tema = parts[0] + (parts.length > 1 && parts[1].contains(" ") ? "" : " " + parts[1]);
+            String kontekst = naziv.substring(naziv.indexOf(tema) + tema.length()).trim();
             Radionica r = new Radionica();
             r.setNaziv(naziv);
             r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
-            r.setOpis("Radionica ima za cilj osnažiti sudionike kroz edukaciju, kritičko promišljanje i aktivno građansko sudjelovanje " +
-                    "u kontekstu " + tema.toLowerCase() + " " + kontekst.toLowerCase() + ". Kroz participativne metode rada potiče se solidarnost, " +
-                    "inkluzivnost i društvena odgovornost.");
+            r.setOpis(generirajOpis(tema, kontekst));
             return r;
         }).toList();
+
 
         radionice = radionicaRepo.saveAll(radionice);
 
@@ -141,4 +140,12 @@ public class DataSeeder {
         return pattern.matcher(normalized).replaceAll("")
                 .replace("đ", "d").replace("Đ", "D");
     }
+
+    private String generirajOpis(String tema, String kontekst) {
+    return "Ova radionica usmjerena je na " + tema.toLowerCase() + " " + kontekst.toLowerCase() +
+           ", s ciljem osnaživanja sudionika kroz praktične primjere, grupni rad i kritičko promišljanje. " +
+           "Sudionici će razviti nove vještine i razumijevanje važnosti " + tema.toLowerCase() + " " +
+           "kroz kontekst " + kontekst.toLowerCase() + ", uz naglasak na društvenu odgovornost i uključivost.";
+}
+
 }
