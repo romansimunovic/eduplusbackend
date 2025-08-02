@@ -27,29 +27,27 @@ public class DataSeeder {
 
     @PostConstruct
     public void init() {
-        // Čistimo sve stare podatke
+        
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
 
-        // Teme za radionice
+        // Relevantne teme za radionice
         List<String> teme = Arrays.asList(
                 "ljudskim pravima", "rodnoj ravnopravnosti", "prevenciji nasilja", "mentalnom zdravlju",
                 "održivom razvoju", "pravima manjina", "digitalnoj sigurnosti", "inkluziji mladih",
                 "zelenim politikama", "građanskom obrazovanju"
         );
 
-        // Generiramo buduće radionice
         List<Radionica> radionice = new ArrayList<>();
         for (String tema : teme) {
             Radionica r = new Radionica();
             r.setNaziv("Radionica o " + tema);
-            r.setDatum(LocalDate.now().plusDays(random.nextInt(30))); // budući datum
+            r.setDatum(LocalDate.now().plusDays(random.nextInt(30))); // budući datum !!
             radionice.add(r);
         }
         radionice = radionicaRepo.saveAll(radionice);
 
-        // Generiramo polaznike s imenom, prezimenom, e-mailom i godinom rođenja
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             String ime = faker.name().firstName();
@@ -58,8 +56,8 @@ public class DataSeeder {
             Polaznik p = new Polaznik();
             p.setIme(ime);
             p.setPrezime(prezime);
-            p.setEmail((ime + "." + prezime + "@example.com").toLowerCase());
-            p.setGodinaRodenja(faker.number().numberBetween(1975, 2010)); // ispravno napisano!
+            p.setEmail((ime + "." + prezime + "@gmail.com").toLowerCase());
+            p.setGodinaRodenja(faker.number().numberBetween(1975, 2010)); 
 
             polaznici.add(p);
         }
