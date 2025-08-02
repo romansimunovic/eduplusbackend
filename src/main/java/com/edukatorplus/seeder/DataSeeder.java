@@ -63,25 +63,24 @@ public class DataSeeder {
             kombinacije.add("Radionica o " + tema + " " + kontekst);
         }
 
-List<Radionica> radionice = kombinacije.stream().map(naziv -> {
-    String tema = naziv.split(" o ")[1].split(" ")[0]; // grubi način da izvučemo "temu"
-    String kontekst = naziv.substring(naziv.lastIndexOf(" ")); // grubi način da izvučemo "kontekst"
+        List<Radionica> radionice = kombinacije.stream().map(naziv -> {
+            String tema = naziv.split(" o ")[1].split(" ")[0];
+            String kontekst = naziv.substring(naziv.lastIndexOf(" "));
 
-    Radionica r = new Radionica();
-    r.setNaziv(naziv);
-    r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
-    r.setOpis("Radionica ima za cilj osnažiti sudionike kroz edukaciju, kritičko promišljanje i aktivno građansko sudjelovanje " +
-             "u kontekstu " + tema.toLowerCase() + " " + kontekst.toLowerCase() + ". Kroz participativne metode rada potiče se solidarnost, " +
-             "inkluzivnost i društvena odgovornost.");
-    return r;
-}).toList();
+            Radionica r = new Radionica();
+            r.setNaziv(naziv);
+            r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
+            r.setOpis("Radionica ima za cilj osnažiti sudionike kroz edukaciju, kritičko promišljanje i aktivno građansko sudjelovanje " +
+                    "u kontekstu " + tema.toLowerCase() + " " + kontekst.toLowerCase() + ". Kroz participativne metode rada potiče se solidarnost, " +
+                    "inkluzivnost i društvena odgovornost.");
+            return r;
+        }).toList();
 
         radionice = radionicaRepo.saveAll(radionice);
 
         // === POLAZNICI ===
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
-            boolean isFemale = random.nextBoolean();
             String ime = faker.name().firstName();
             String prezime = faker.name().lastName();
             String spol = ime.toLowerCase().endsWith("a") ? "ženski" : "muški";
@@ -111,16 +110,17 @@ List<Radionica> radionice = kombinacije.stream().map(naziv -> {
         // === PRISUSTVA ===
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
-            for (Polaznik p : polaznici) {
-                if (random.nextBoolean()) {
-                    Prisustvo pr = new Prisustvo();
-                    pr.setRadionica(r);
-                    pr.setPolaznik(p);
-                    pr.setStatus(randomStatus());
-                    prisustva.add(pr);
-                }
+            Collections.shuffle(polaznici);
+            List<Polaznik> odabrani = polaznici.subList(0, 10 + random.nextInt(6)); // 10-15 po radionici
+            for (Polaznik p : odabrani) {
+                Prisustvo pr = new Prisustvo();
+                pr.setRadionica(r);
+                pr.setPolaznik(p);
+                pr.setStatus(randomStatus());
+                prisustva.add(pr);
             }
         }
+
         prisustvoRepo.saveAll(prisustva);
     }
 
