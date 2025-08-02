@@ -14,17 +14,17 @@ public class Polaznik {
     private String ime;
     private String prezime;
     private String email;
-    private Integer godinaRođenja;
+    private Integer godinaRodenja;
 
     public Polaznik() {
         // obavezan prazan konstruktor za JPA
     }
 
-    public Polaznik(String ime, String prezime, String email, Integer godinaRođenja) {
+    public Polaznik(String ime, String prezime, String email, Integer godinaRodenja) {
         this.ime = ime;
         this.prezime = prezime;
         this.email = email;
-        this.godinaRođenja = godinaRođenja;
+        this.godinaRodenja = godinaRodenja;
     }
 
     // Getteri i setteri
@@ -60,11 +60,11 @@ public class Polaznik {
         this.email = email;
     }
 
-    public Integer getGodinaRođenja() {
-        return godinaRođenja;
+    public Integer getGodinaRodenja() {
+        return godinaRodenja;
     }
 
-    public void setGodinaRođenja(Integer godinaRođenja) {
-        this.godinaRođenja = godinaRođenja;
+    public void setGodinaRodenja(Integer godinaRodenja) {
+        this.godinaRodenja = godinaRodenja;
     }
 }
