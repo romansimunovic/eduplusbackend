@@ -1,6 +1,6 @@
 package com.edukatorplus.controller;
 
-import com.edukatorplus.DTO.RadionicaDTO;
+import com.edukatorplus.dto.RadionicaDTO;
 import com.edukatorplus.service.RadionicaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
