@@ -2,17 +2,19 @@ package com.edukatorplus.controller;
 
 import com.edukatorplus.seeder.DataSeeder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/seed")
+@RequestMapping("/api/dev")
 public class SeederController {
 
     @Autowired
-    private DataSeeder seeder;
+    private DataSeeder dataSeeder;
 
-    @PostMapping
-    public void regenerate() {
-        seeder.generateNewData(); // nova metoda, vidi dolje
+    @PostMapping("/seed")
+    public ResponseEntity<String> regenerate() {
+        dataSeeder.generateNewData();
+        return ResponseEntity.ok("Podaci su ponovno generirani.");
     }
 }
