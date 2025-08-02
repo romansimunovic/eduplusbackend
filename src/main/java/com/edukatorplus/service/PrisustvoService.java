@@ -101,16 +101,20 @@ public class PrisustvoService {
         }
     }
 
-    // ✅ Prikaz za frontend s rodom (spol)
-    public List<PrisustvoViewDTO> getAllForDisplay() {
-        return prisustvoRepository.findAll().stream()
-                .map(p -> new PrisustvoViewDTO(
-                        p.getId(),
-                        p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
-                        p.getRadionica().getNaziv(),
-                        getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol()),
-                        p.getPolaznik().getSpol()
-                ))
-                .toList();
-    }
+public List<PrisustvoViewDTO> getAllForDisplay() {
+    return prisustvoRepository.findAll().stream()
+        .map(p -> {
+            String spol = p.getPolaznik().getSpol();
+            String statusTekst = getRodnoOsjetljivStatus(p.getStatus(), spol);
+            return new PrisustvoViewDTO(
+                    p.getId(),
+                    p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
+                    p.getRadionica().getNaziv(),
+                    statusTekst,
+                    spol
+            );
+        })
+        .toList();
+}
+
 }
