@@ -84,37 +84,25 @@ public class PrisustvoService {
         prisustvoRepository.deleteById(id);
     }
 
-    // ✅ Metoda za rodno osjetljiv tekst statusa
     public static String getRodnoOsjetljivStatus(StatusPrisustva status, String spol) {
         if (spol == null) return "nepoznato";
 
-        switch (status) {
-            case PRISUTAN:
-                return spol.equalsIgnoreCase("ž") ? "prisutna" : "prisutan";
-            case IZOSTAO:
-                return spol.equalsIgnoreCase("ž") ? "izostala" : "izostao";
-            case ODUSTAO:
-                return spol.equalsIgnoreCase("ž") ? "odustala" : "odustao";
-            case NEPOZNATO:
-            default:
-                return "nepoznato";
-        }
+        return switch (status) {
+            case PRISUTAN -> spol.equalsIgnoreCase("ž") ? "prisutna" : "prisutan";
+            case IZOSTAO -> spol.equalsIgnoreCase("ž") ? "izostala" : "izostao";
+            case ODUSTAO -> spol.equalsIgnoreCase("ž") ? "odustala" : "odustao";
+            case NEPOZNATO -> "nepoznato";
+        };
     }
 
-public List<PrisustvoViewDTO> getAllForDisplay() {
-    return prisustvoRepository.findAll().stream()
-        .map(p -> {
-            String spol = p.getPolaznik().getSpol();
-            String statusTekst = getRodnoOsjetljivStatus(p.getStatus(), spol);
-            return new PrisustvoViewDTO(
-                    p.getId(),
-                    p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
-                    p.getRadionica().getNaziv(),
-                    statusTekst,
-                    spol
-            );
-        })
-        .toList();
-}
-
+    public List<PrisustvoViewDTO> getAllForDisplay() {
+        return prisustvoRepository.findAll().stream()
+                .map(p -> new PrisustvoViewDTO(
+                        p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
+                        p.getRadionica().getNaziv(),
+                        p.getStatus(),
+                        getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
+                ))
+                .toList();
+    }
 }
