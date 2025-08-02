@@ -31,9 +31,13 @@ public class DataSeeder {
 
     @PostConstruct
     public void init() {
-        prisustvoRepo.deleteAllInBatch();
-        polaznikRepo.deleteAllInBatch();
-        radionicaRepo.deleteAllInBatch();
+        // Provjeri postoji li već sadržaj u bazi
+        if (polaznikRepo.count() > 0 || radionicaRepo.count() > 0 || prisustvoRepo.count() > 0) {
+            System.out.println("[INFO] Podaci već postoje. Seeder neće ponovno pokrenuti generiranje.");
+            return;
+        }
+
+        System.out.println("[INFO] Seeder pokreće generiranje testnih podataka...");
 
         List<String> teme = List.of(
             "održivom razvoju", "recikliranju otpada", "digitalnoj sigurnosti",
@@ -98,6 +102,8 @@ public class DataSeeder {
             }
         }
         prisustvoRepo.saveAll(prisustva);
+
+        System.out.println("[INFO] Generiranje podataka završeno!");
     }
 
     private StatusPrisustva randomStatus() {
