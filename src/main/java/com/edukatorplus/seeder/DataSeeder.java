@@ -27,25 +27,29 @@ public class DataSeeder {
 
     @PostConstruct
     public void init() {
+        // Čistimo sve stare podatke
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
 
+        // Teme za radionice
         List<String> teme = Arrays.asList(
                 "ljudskim pravima", "rodnoj ravnopravnosti", "prevenciji nasilja", "mentalnom zdravlju",
                 "održivom razvoju", "pravima manjina", "digitalnoj sigurnosti", "inkluziji mladih",
                 "zelenim politikama", "građanskom obrazovanju"
         );
 
+        // Generiramo buduće radionice
         List<Radionica> radionice = new ArrayList<>();
         for (String tema : teme) {
             Radionica r = new Radionica();
             r.setNaziv("Radionica o " + tema);
-            r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
+            r.setDatum(LocalDate.now().plusDays(random.nextInt(30))); // budući datum
             radionice.add(r);
         }
         radionice = radionicaRepo.saveAll(radionice);
 
+        // Generiramo polaznike s imenom, prezimenom, e-mailom i godinom rođenja
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             String ime = faker.name().firstName();
@@ -55,13 +59,13 @@ public class DataSeeder {
             p.setIme(ime);
             p.setPrezime(prezime);
             p.setEmail((ime + "." + prezime + "@example.com").toLowerCase());
-            p.setgodinaRodenja(faker.number().numberBetween(1975, 2010));
+            p.setGodinaRodenja(faker.number().numberBetween(1975, 2010)); // ispravno napisano!
 
             polaznici.add(p);
         }
         polaznici = polaznikRepo.saveAll(polaznici);
 
-        // Generira prisustva
+        // Generiramo prisustva
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
@@ -77,8 +81,9 @@ public class DataSeeder {
         prisustvoRepo.saveAll(prisustva);
     }
 
+    // Status prisustva (uključuje i "ODUSTAO")
     private StatusPrisustva randomStatus() {
-        int pick = random.nextInt(4); 
+        int pick = random.nextInt(4);
         return switch (pick) {
             case 0 -> StatusPrisustva.PRISUTAN;
             case 1 -> StatusPrisustva.IZOSTAO;
