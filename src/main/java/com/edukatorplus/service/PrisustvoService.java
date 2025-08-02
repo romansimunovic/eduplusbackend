@@ -5,6 +5,7 @@ import com.edukatorplus.dto.PrisustvoViewDTO;
 import com.edukatorplus.model.Polaznik;
 import com.edukatorplus.model.Prisustvo;
 import com.edukatorplus.model.Radionica;
+import com.edukatorplus.model.StatusPrisustva;
 import com.edukatorplus.repository.PolaznikRepository;
 import com.edukatorplus.repository.PrisustvoRepository;
 import com.edukatorplus.repository.RadionicaRepository;
@@ -47,7 +48,7 @@ public class PrisustvoService {
                         p.getId(),
                         p.getPolaznik().getId(),
                         p.getRadionica().getId(),
-                    getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
+                        p.getStatus()))
                 .toList();
     }
 
@@ -83,21 +84,22 @@ public class PrisustvoService {
         prisustvoRepository.deleteById(id);
     }
 
+    // ✅ Metoda za rodno osjetljiv tekst statusa
     public static String getRodnoOsjetljivStatus(StatusPrisustva status, String spol) {
-    if (spol == null) return status.name().toLowerCase();
+        if (spol == null) return "nepoznato";
 
-    switch (status) {
-        case PRISUTAN:
-            return spol.equalsIgnoreCase("ž") ? "prisutna" : "prisutAN";
-        case IZOSTAO:
-            return spol.equalsIgnoreCase("ž") ? "izostala" : "izostao";
-        case ODUSTAO:
-            return spol.equalsIgnoreCase("ž") ? "odustala" : "odustao";
-        case NEPOZNATO:
-        default:
-            return "nepoznato";
+        switch (status) {
+            case PRISUTAN:
+                return spol.equalsIgnoreCase("ž") ? "prisutna" : "prisutan";
+            case IZOSTAO:
+                return spol.equalsIgnoreCase("ž") ? "izostala" : "izostao";
+            case ODUSTAO:
+                return spol.equalsIgnoreCase("ž") ? "odustala" : "odustao";
+            case NEPOZNATO:
+            default:
+                return "nepoznato";
+        }
     }
-}
 
     // ✅ Prikaz za frontend s rodom (spol)
     public List<PrisustvoViewDTO> getAllForDisplay() {
@@ -106,8 +108,8 @@ public class PrisustvoService {
                         p.getId(),
                         p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
                         p.getRadionica().getNaziv(),
-                        p.getStatus().name(),
-                        p.getPolaznik().getSpol() 
+                        getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol()),
+                        p.getPolaznik().getSpol()
                 ))
                 .toList();
     }
