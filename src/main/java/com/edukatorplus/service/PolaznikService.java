@@ -82,7 +82,7 @@ public class PolaznikService {
             Polaznik p = opt.get();
 
             // Brišemo prvo sva prisustva vezana uz polaznika
-            prisustvoRepository.deleteByPolaznikId(id); // Brišemo prisustva po ID-u polaznika
+            prisustvoRepository.deleteByPolaznik_Id(id);
 
             // Brišemo polaznika
             polaznikRepository.delete(p);
