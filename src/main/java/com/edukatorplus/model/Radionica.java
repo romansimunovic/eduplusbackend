@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import java.time.LocalDate; // ✅ OVO JE NEDOSTAJALO
 
 @Entity
 public class Radionica {
@@ -14,11 +15,9 @@ public class Radionica {
 
     private String naziv;
 
-    private String opis; // ✅ NOVO
+    private String opis;
 
     private LocalDate datum;
-
-    // 🔧 KONSTRUKTORI
 
     public Radionica() {
     }
@@ -33,8 +32,6 @@ public class Radionica {
         this.naziv = naziv;
         this.datum = datum;
     }
-
-    // ✅ GETTERI I SETTERI
 
     public Long getId() {
         return id;
