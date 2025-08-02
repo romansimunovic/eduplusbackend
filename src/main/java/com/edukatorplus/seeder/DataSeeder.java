@@ -41,7 +41,7 @@ public class DataSeeder {
         for (String tema : teme) {
             Radionica r = new Radionica();
             r.setNaziv("Radionica o " + tema);
-            r.setDatum(LocalDate.now().minusDays(random.nextInt(30)));
+            r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
             radionice.add(r);
         }
         radionice = radionicaRepo.saveAll(radionice);
@@ -55,7 +55,7 @@ public class DataSeeder {
             p.setIme(ime);
             p.setPrezime(prezime);
             p.setEmail((ime + "." + prezime + "@example.com").toLowerCase());
-            p.setGodinaRodenja(faker.number().numberBetween(1990, 2010));
+            p.setGodinaRodenja(faker.number().numberBetween(1975, 2010));
 
             polaznici.add(p);
         }
