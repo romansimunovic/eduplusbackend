@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 public class DevController {
 
     @Autowired
-    private DataSeeder seeder;
+    private DataSeeder dataSeeder;
 
     @PostMapping("/seed")
     public ResponseEntity<String> regenerateData() {
-        seeder.init();  // Poziva tvoju metodu koja briše sve i sjemeni iznova
+        dataSeeder.generateNewData();
         return ResponseEntity.ok("Podaci su ponovno generirani.");
     }
 }
