@@ -44,18 +44,19 @@ public class PrisustvoController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Ažuriraj prisustvo prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Prisustvo uspješno ažurirano"),
-            @ApiResponse(responseCode = "404", description = "Prisustvo s tim ID-om nije pronađeno")
+    @Operation(summary = "Ažuriraj postojeće prisustvo", responses = {
+            @ApiResponse(responseCode = "200", description = "Prisustvo ažurirano"),
+            @ApiResponse(responseCode = "404", description = "Prisustvo nije pronađeno")
     })
     public PrisustvoDTO updatePrisustvo(@PathVariable Long id, @RequestBody PrisustvoDTO prisustvoDTO) {
+        prisustvoDTO.setId(id); // Obavezno postavi ID u DTO ako nije već
         return prisustvoService.updatePrisustvo(id, prisustvoDTO);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Obriši prisustvo prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Prisustvo uspješno obrisano"),
-            @ApiResponse(responseCode = "404", description = "Prisustvo s tim ID-om nije pronađeno")
+    @Operation(summary = "Obriši prisustvo", responses = {
+            @ApiResponse(responseCode = "200", description = "Prisustvo obrisano"),
+            @ApiResponse(responseCode = "404", description = "Prisustvo nije pronađeno")
     })
     public void deletePrisustvo(@PathVariable Long id) {
         prisustvoService.deletePrisustvo(id);
