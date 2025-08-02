@@ -31,26 +31,26 @@ public class DataSeeder {
 
     @PostConstruct
     public void init() {
-        // Provjeri postoji li već sadržaj u bazi
-        if (polaznikRepo.count() > 0 || radionicaRepo.count() > 0 || prisustvoRepo.count() > 0) {
-            System.out.println("[INFO] Podaci već postoje. Seeder neće ponovno pokrenuti generiranje.");
-            return;
-        }
+        generateNewData();
+    }
 
-        System.out.println("[INFO] Seeder pokreće generiranje testnih podataka...");
+    public void generateNewData() {
+        prisustvoRepo.deleteAllInBatch();
+        polaznikRepo.deleteAllInBatch();
+        radionicaRepo.deleteAllInBatch();
 
         List<String> teme = List.of(
-            "održivom razvoju", "recikliranju otpada", "digitalnoj sigurnosti",
-            "umjetnoj inteligenciji", "informacijskoj pismenosti", "rodnoj ravnopravnosti",
-            "građanskoj edukaciji", "mentalnom zdravlju", "pravu na privatnost", "programiranju mladih",
-            "klimatskim promjenama", "zdravim životnim navikama", "volontiranju", "ekološkoj odgovornosti",
-            "kritičkom mišljenju", "multikulturalizmu", "društvenoj pravdi", "zelenoj energiji"
+                "održivom razvoju", "recikliranju otpada", "digitalnoj sigurnosti",
+                "umjetnoj inteligenciji", "informacijskoj pismenosti", "rodnoj ravnopravnosti",
+                "građanskoj edukaciji", "mentalnom zdravlju", "pravu na privatnost", "programiranju mladih",
+                "klimatskim promjenama", "zdravim životnim navikama", "volontiranju", "ekološkoj odgovornosti",
+                "kritičkom mišljenju", "multikulturalizmu", "društvenoj pravdi", "zelenoj energiji"
         );
 
         List<String> konteksti = List.of(
-            "u zajednici", "na radnom mjestu", "u školama", "za budućnost", "kod mladih",
-            "u svakodnevici", "kroz kreativnost", "u digitalnom okruženju", "putem STEM pristupa",
-            "za društvenu promjenu", "u civilnom sektoru", "u obrazovanju odraslih"
+                "u zajednici", "na radnom mjestu", "u školama", "za budućnost", "kod mladih",
+                "u svakodnevici", "kroz kreativnost", "u digitalnom okruženju", "putem STEM pristupa",
+                "za društvenu promjenu", "u civilnom sektoru", "u obrazovanju odraslih"
         );
 
         Set<String> kombinacije = new HashSet<>();
@@ -102,8 +102,6 @@ public class DataSeeder {
             }
         }
         prisustvoRepo.saveAll(prisustva);
-
-        System.out.println("[INFO] Generiranje podataka završeno!");
     }
 
     private StatusPrisustva randomStatus() {
