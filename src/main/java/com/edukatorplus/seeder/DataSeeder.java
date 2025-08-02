@@ -63,12 +63,18 @@ public class DataSeeder {
             kombinacije.add("Radionica o " + tema + " " + kontekst);
         }
 
-        List<Radionica> radionice = kombinacije.stream().map(naziv -> {
-            Radionica r = new Radionica();
-            r.setNaziv(naziv);
-            r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
-            return r;
-        }).toList();
+List<Radionica> radionice = kombinacije.stream().map(naziv -> {
+    String tema = naziv.split(" o ")[1].split(" ")[0]; // grubi način da izvučemo "temu"
+    String kontekst = naziv.substring(naziv.lastIndexOf(" ")); // grubi način da izvučemo "kontekst"
+
+    Radionica r = new Radionica();
+    r.setNaziv(naziv);
+    r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
+    r.setOpis("Radionica ima za cilj osnažiti sudionike kroz edukaciju, kritičko promišljanje i aktivno građansko sudjelovanje " +
+             "u kontekstu " + tema.toLowerCase() + " " + kontekst.toLowerCase() + ". Kroz participativne metode rada potiče se solidarnost, " +
+             "inkluzivnost i društvena odgovornost.");
+    return r;
+}).toList();
 
         radionice = radionicaRepo.saveAll(radionice);
 
