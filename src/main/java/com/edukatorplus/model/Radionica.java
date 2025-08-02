@@ -4,8 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.Lob;
 import java.time.LocalDate;
 
 @Entity
@@ -16,11 +14,7 @@ public class Radionica {
     private Long id;
 
     private String naziv;
-
-    @Lob
-    @Column
-    private String opis;
-    
+   
     private LocalDate datum;
 
     public Radionica() {
@@ -47,14 +41,6 @@ public class Radionica {
 
     public void setNaziv(String naziv) {
         this.naziv = naziv;
-    }
-
-    public String getOpis() {
-        return opis;
-    }
-
-    public void setOpis(String opis) {
-        this.opis = opis;
     }
 
     public LocalDate getDatum() {
