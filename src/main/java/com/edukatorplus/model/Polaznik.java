@@ -33,7 +33,6 @@ public class Polaznik {
         this.status = status;
     }
 
-    // Getteri i setteri
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -60,4 +59,4 @@ public class Polaznik {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-} 
+}
