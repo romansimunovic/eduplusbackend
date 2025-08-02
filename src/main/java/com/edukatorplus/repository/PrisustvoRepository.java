@@ -21,5 +21,5 @@ public interface PrisustvoRepository extends JpaRepository<Prisustvo, Long> {
     // Pretraga prisustva prema polazniku i radionici
     List<Prisustvo> findByStatus(StatusPrisustva status);
 
-    public void deleteByPolaznikId(Long id);
+    void deleteByRadionica_Id(Long id);
 }
