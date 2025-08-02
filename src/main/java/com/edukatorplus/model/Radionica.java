@@ -4,7 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import java.time.LocalDate; 
+import javax.persistence.Column;
+import javax.persistence.Lob;
+import java.time.LocalDate;
 
 @Entity
 public class Radionica {
