@@ -31,42 +31,51 @@ public class DataSeeder {
     private static final List<String> STATUSI = List.of("student", "zaposlen", "nezaposlen", "učenik");
     private static final List<String> GRADOVI = List.of("Osijek", "Zagreb", "Rijeka", "Split", "Pula", "Varaždin", "Zadar", "Slavonski Brod");
 
+    private static final Map<String, String> TEMA_U_GENITIVU = Map.ofEntries(
+            Map.entry("feminizmu", "feminizma"),
+            Map.entry("informacijskoj pismenosti", "informacijske pismenosti"),
+            Map.entry("digitalnoj inkluziji", "digitalne inkluzije"),
+            Map.entry("društvenom aktivizmu", "društvenog aktivizma"),
+            Map.entry("umjetnoj inteligenciji", "umjetne inteligencije"),
+            Map.entry("informacijskoj etici", "informacijske etike"),
+            Map.entry("sigurnosti na internetu", "sigurnosti na internetu"),
+            Map.entry("rodnoj ravnopravnosti", "rodne ravnopravnosti"),
+            Map.entry("klimatskim promjenama", "klimatskih promjena"),
+            Map.entry("zelenim politikama", "zelenih politika"),
+            Map.entry("kritičkom promišljanju", "kritičkog promišljanja"),
+            Map.entry("volontiranju", "volontiranja"),
+            Map.entry("društvenoj pravdi", "društvene pravde"),
+            Map.entry("mentalnom zdravlju", "mentalnog zdravlja"),
+            Map.entry("građanskoj edukaciji", "građanske edukacije")
+    );
+
+    private static final List<String> TEME = new ArrayList<>(TEMA_U_GENITIVU.keySet());
+    private static final List<String> KONTEKSTI = List.of(
+            "u zajednici", "za mlade", "u civilnom sektoru", "u obrazovanju odraslih",
+            "na internetu", "u svakodnevici", "na radnom mjestu", "u knjižnicama",
+            "u STEM obrazovanju", "putem radionica", "kroz neformalno učenje"
+    );
+
     @PostConstruct
     public void init() {
         generateNewData();
     }
 
     public void generateNewData() {
-        // Reset svega
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
 
-        // === RADIONICE ===
-        List<String> teme = List.of(
-                "održivom razvoju", "recikliranju otpada", "digitalnoj sigurnosti",
-                "umjetnoj inteligenciji", "informacijskoj pismenosti", "rodnoj ravnopravnosti",
-                "građanskoj edukaciji", "mentalnom zdravlju", "pravu na privatnost", "programiranju mladih",
-                "klimatskim promjenama", "zdravim životnim navikama", "volontiranju", "ekološkoj odgovornosti",
-                "kritičkom mišljenju", "multikulturalizmu", "društvenoj pravdi", "zelenoj energiji"
-        );
-
-        List<String> konteksti = List.of(
-                "u zajednici", "na radnom mjestu", "u školama", "za budućnost", "kod mladih",
-                "u svakodnevici", "kroz kreativnost", "u digitalnom okruženju", "putem STEM pristupa",
-                "za društvenu promjenu", "u civilnom sektoru", "u obrazovanju odraslih"
-        );
-
         Set<String> kombinacije = new HashSet<>();
         while (kombinacije.size() < 10) {
-            String tema = teme.get(random.nextInt(teme.size()));
-            String kontekst = konteksti.get(random.nextInt(konteksti.size()));
+            String tema = TEME.get(random.nextInt(TEME.size()));
+            String kontekst = KONTEKSTI.get(random.nextInt(KONTEKSTI.size()));
             kombinacije.add("Radionica o " + tema + " " + kontekst);
         }
+
         List<Radionica> radionice = kombinacije.stream().map(naziv -> {
-            
-            String[] parts = naziv.replace("Radionica o ", "").split(" ", 2);
-            String tema = parts[0] + (parts.length > 1 && parts[1].contains(" ") ? "" : " " + parts[1]);
+            String tema = Arrays.stream(TEME.toArray(new String[0]))
+                    .filter(naziv::contains).findFirst().orElse("feminizmu");
             String kontekst = naziv.substring(naziv.indexOf(tema) + tema.length()).trim();
             Radionica r = new Radionica();
             r.setNaziv(naziv);
@@ -75,43 +84,33 @@ public class DataSeeder {
             return r;
         }).toList();
 
-
         radionice = radionicaRepo.saveAll(radionice);
 
-        // === POLAZNICI ===
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             String ime = faker.name().firstName();
             String prezime = faker.name().lastName();
             String spol = ime.toLowerCase().endsWith("a") ? "ženski" : "muški";
-            String cleanIme = removeDiacritics(ime);
-            String cleanPrezime = removeDiacritics(prezime);
-            String broj = random.nextBoolean() ? String.valueOf(random.nextInt(100)) : "";
-            String domena = DOMENE.get(random.nextInt(DOMENE.size()));
-            String email = (cleanIme + "." + cleanPrezime + broj + "@" + domena).toLowerCase();
-            String telefon = faker.phoneNumber().cellPhone();
-            String grad = GRADOVI.get(random.nextInt(GRADOVI.size()));
-            String status = STATUSI.get(random.nextInt(STATUSI.size()));
-
+            String email = (removeDiacritics(ime) + "." + removeDiacritics(prezime) +
+                    (random.nextBoolean() ? random.nextInt(100) : "") + "@" +
+                    DOMENE.get(random.nextInt(DOMENE.size()))).toLowerCase();
             Polaznik p = new Polaznik();
             p.setIme(ime);
             p.setPrezime(prezime);
             p.setEmail(email);
-            p.setGodinaRodenja(faker.number().numberBetween(1975, 2010));
+            p.setGodinaRodenja(faker.number().numberBetween(1970, 2006));
             p.setSpol(spol);
-            p.setTelefon(telefon);
-            p.setGrad(grad);
-            p.setStatus(status);
+            p.setTelefon(faker.phoneNumber().cellPhone());
+            p.setGrad(GRADOVI.get(random.nextInt(GRADOVI.size())));
+            p.setStatus(STATUSI.get(random.nextInt(STATUSI.size())));
             polaznici.add(p);
         }
 
         polaznici = polaznikRepo.saveAll(polaznici);
 
-        // === PRISUSTVA ===
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
-                // 70% šansa da polaznik bude na ovoj radionici
                 if (random.nextDouble() < 0.7) {
                     Prisustvo pr = new Prisustvo();
                     pr.setRadionica(r);
@@ -126,26 +125,20 @@ public class DataSeeder {
     }
 
     private StatusPrisustva randomStatus() {
-        return switch (random.nextInt(4)) {
-            case 0 -> StatusPrisustva.PRISUTAN;
-            case 1 -> StatusPrisustva.IZOSTAO;
-            case 2 -> StatusPrisustva.NEPOZNATO;
-            default -> StatusPrisustva.ODUSTAO;
-        };
+        return StatusPrisustva.values()[random.nextInt(StatusPrisustva.values().length)];
     }
 
     private String removeDiacritics(String input) {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
-        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-        return pattern.matcher(normalized).replaceAll("")
+        return Pattern.compile("\\p{InCombiningDiacriticalMarks}+").matcher(normalized).replaceAll("")
                 .replace("đ", "d").replace("Đ", "D");
     }
 
     private String generirajOpis(String tema, String kontekst) {
-    return "Ova radionica usmjerena je na " + tema.toLowerCase() + " " + kontekst.toLowerCase() +
-           ", s ciljem osnaživanja sudionika kroz praktične primjere, grupni rad i kritičko promišljanje. " +
-           "Sudionici će razviti nove vještine i razumijevanje važnosti " + tema.toLowerCase() + " " +
-           "kroz kontekst " + kontekst.toLowerCase() + ", uz naglasak na društvenu odgovornost i uključivost.";
-}
-
+        String genitiv = TEMA_U_GENITIVU.getOrDefault(tema, tema);
+        return "Ova radionica usmjerena je na " + tema + " " + kontekst +
+                ", s ciljem osnaživanja sudionika kroz razmjenu znanja, praktične primjere i grupni rad. " +
+                "Sudionici će razviti vještine i razumijevanje važnosti " + genitiv +
+                " u svakodnevnom i profesionalnom kontekstu, uz naglasak na inkluziju, solidarnost i aktivno građanstvo.";
+    }
 }
