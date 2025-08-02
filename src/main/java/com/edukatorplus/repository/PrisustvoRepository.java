@@ -9,17 +9,15 @@ import java.util.List;
 @Repository
 public interface PrisustvoRepository extends JpaRepository<Prisustvo, Long> {
 
-    // Pretraga prisustva prema polazniku
     List<Prisustvo> findByPolaznikId(Long polaznikId);
 
-    // Pretraga prisustva prema radionici
     List<Prisustvo> findByRadionicaId(Long radionicaId);
 
-    // Pretraga prisustva prema statusu
     List<Prisustvo> findByStatus(String status);
 
-    // Pretraga prisustva prema polazniku i radionici
     List<Prisustvo> findByStatus(StatusPrisustva status);
 
     void deleteByRadionica_Id(Long id);
+
+    void deleteByPolaznik_Id(Long id); 
 }
