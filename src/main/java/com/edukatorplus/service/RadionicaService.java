@@ -48,10 +48,10 @@ public class RadionicaService {
 
     public boolean deleteRadionica(Long id) {
         if (radionicaRepository.existsById(id)) {
-            // 1. Obriši prisustva za tu radionicu
-            prisustvoRepository.deleteByRadionicaId(id);
+            // Prvo obriši sve prisutnosti vezane uz tu radionicu
+            prisustvoRepository.deleteByRadionica_Id(id);
 
-            // 2. Obriši samu radionicu
+            // Zatim obriši i samu radionicu
             radionicaRepository.deleteById(id);
             return true;
         }
