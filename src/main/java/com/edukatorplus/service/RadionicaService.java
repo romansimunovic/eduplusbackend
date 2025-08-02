@@ -2,6 +2,7 @@ package com.edukatorplus.service;
 
 import com.edukatorplus.dto.RadionicaDTO;
 import com.edukatorplus.model.Radionica;
+import com.edukatorplus.repository.PrisustvoRepository;
 import com.edukatorplus.repository.RadionicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class RadionicaService {
 
     @Autowired
     private RadionicaRepository radionicaRepository;
+
+    @Autowired
+    private PrisustvoRepository prisustvoRepository;
 
     public RadionicaDTO saveRadionica(RadionicaDTO dto) {
         Radionica r = new Radionica(dto.naziv(), dto.datum());
@@ -44,6 +48,10 @@ public class RadionicaService {
 
     public boolean deleteRadionica(Long id) {
         if (radionicaRepository.existsById(id)) {
+            // 1. Obriši prisustva za tu radionicu
+            prisustvoRepository.deleteByRadionicaId(id);
+
+            // 2. Obriši samu radionicu
             radionicaRepository.deleteById(id);
             return true;
         }
