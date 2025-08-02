@@ -31,29 +31,20 @@ public class DataSeeder {
     private static final List<String> STATUSI = List.of("student", "zaposlen", "nezaposlen", "učenik");
     private static final List<String> GRADOVI = List.of("Osijek", "Zagreb", "Rijeka", "Split", "Pula", "Varaždin", "Zadar", "Slavonski Brod");
 
-    private static final Map<String, String> TEMA_U_GENITIVU = Map.ofEntries(
-            Map.entry("feminizmu", "feminizma"),
-            Map.entry("informacijskoj pismenosti", "informacijske pismenosti"),
-            Map.entry("digitalnoj inkluziji", "digitalne inkluzije"),
-            Map.entry("društvenom aktivizmu", "društvenog aktivizma"),
-            Map.entry("umjetnoj inteligenciji", "umjetne inteligencije"),
-            Map.entry("informacijskoj etici", "informacijske etike"),
-            Map.entry("sigurnosti na internetu", "sigurnosti na internetu"),
-            Map.entry("rodnoj ravnopravnosti", "rodne ravnopravnosti"),
-            Map.entry("klimatskim promjenama", "klimatskih promjena"),
-            Map.entry("zelenim politikama", "zelenih politika"),
-            Map.entry("kritičkom promišljanju", "kritičkog promišljanja"),
-            Map.entry("volontiranju", "volontiranja"),
-            Map.entry("društvenoj pravdi", "društvene pravde"),
-            Map.entry("mentalnom zdravlju", "mentalnog zdravlja"),
-            Map.entry("građanskoj edukaciji", "građanske edukacije")
+    private static final List<String> TEME = List.of(
+            "feminizmu", "programiranju", "umjetnoj inteligenciji", "civilnom društvu",
+            "digitalnoj sigurnosti", "kritičkom mišljenju", "informacijskoj pismenosti",
+            "održivom razvoju", "građanskoj participaciji", "društvenoj pravdi",
+            "ljudskim pravima", "volontiranju", "inkluzivnom obrazovanju", "multikulturalizmu",
+            "pravima LGBTQ+ osoba", "zelenoj energiji", "recikliranju otpada", "mentalnom zdravlju",
+            "medijskoj pismenosti", "ekološkoj svijesti", "obrazovanju žena u STEM-u"
     );
 
-    private static final List<String> TEME = new ArrayList<>(TEMA_U_GENITIVU.keySet());
     private static final List<String> KONTEKSTI = List.of(
-            "u zajednici", "za mlade", "u civilnom sektoru", "u obrazovanju odraslih",
-            "na internetu", "u svakodnevici", "na radnom mjestu", "u knjižnicama",
-            "u STEM obrazovanju", "putem radionica", "kroz neformalno učenje"
+            "u zajednici", "u civilnom sektoru", "u digitalnom dobu", "na radnom mjestu",
+            "za mlade", "u školama", "u svakodnevnom životu", "putem radionica",
+            "kroz neformalno obrazovanje", "u obrazovanju odraslih", "u lokalnim inicijativama",
+            "u nevladinim organizacijama", "u knjižnicama", "putem online platformi", "na društvenim mrežama"
     );
 
     @PostConstruct
@@ -67,22 +58,19 @@ public class DataSeeder {
         radionicaRepo.deleteAllInBatch();
 
         Set<String> kombinacije = new HashSet<>();
-        while (kombinacije.size() < 10) {
+        while (kombinacije.size() < 12) {
             String tema = TEME.get(random.nextInt(TEME.size()));
             String kontekst = KONTEKSTI.get(random.nextInt(KONTEKSTI.size()));
-            kombinacije.add("Radionica o " + tema + " " + kontekst);
+            String naziv = "Radionica o " + tema + " " + kontekst;
+            kombinacije.add(naziv);
         }
 
         List<Radionica> radionice = kombinacije.stream().map(naziv -> {
-            String tema = Arrays.stream(TEME.toArray(new String[0]))
-                    .filter(naziv::contains).findFirst().orElse("feminizmu");
-            String kontekst = naziv.substring(naziv.indexOf(tema) + tema.length()).trim();
             Radionica r = new Radionica();
-            r.setNaziv(naziv);
+            r.setNaziv(capitalize(naziv.trim()));
             r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
             return r;
         }).toList();
-
         radionice = radionicaRepo.saveAll(radionice);
 
         List<Polaznik> polaznici = new ArrayList<>();
@@ -90,27 +78,28 @@ public class DataSeeder {
             String ime = faker.name().firstName();
             String prezime = faker.name().lastName();
             String spol = ime.toLowerCase().endsWith("a") ? "ženski" : "muški";
-            String email = (removeDiacritics(ime) + "." + removeDiacritics(prezime) +
-                    (random.nextBoolean() ? random.nextInt(100) : "") + "@" +
-                    DOMENE.get(random.nextInt(DOMENE.size()))).toLowerCase();
+            String cleanIme = removeDiacritics(ime);
+            String cleanPrezime = removeDiacritics(prezime);
+            String broj = random.nextBoolean() ? String.valueOf(random.nextInt(100)) : "";
+            String email = (cleanIme + "." + cleanPrezime + broj + "@" + DOMENE.get(random.nextInt(DOMENE.size()))).toLowerCase();
+
             Polaznik p = new Polaznik();
             p.setIme(ime);
             p.setPrezime(prezime);
-            p.setEmail(email);
-            p.setGodinaRodenja(faker.number().numberBetween(1970, 2006));
             p.setSpol(spol);
+            p.setEmail(email);
             p.setTelefon(faker.phoneNumber().cellPhone());
+            p.setGodinaRodenja(faker.number().numberBetween(1975, 2007));
             p.setGrad(GRADOVI.get(random.nextInt(GRADOVI.size())));
             p.setStatus(STATUSI.get(random.nextInt(STATUSI.size())));
             polaznici.add(p);
         }
-
         polaznici = polaznikRepo.saveAll(polaznici);
 
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
-                if (random.nextDouble() < 0.7) {
+                if (random.nextDouble() < 0.75) { 
                     Prisustvo pr = new Prisustvo();
                     pr.setRadionica(r);
                     pr.setPolaznik(p);
@@ -119,7 +108,6 @@ public class DataSeeder {
                 }
             }
         }
-
         prisustvoRepo.saveAll(prisustva);
     }
 
@@ -131,5 +119,9 @@ public class DataSeeder {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         return Pattern.compile("\\p{InCombiningDiacriticalMarks}+").matcher(normalized).replaceAll("")
                 .replace("đ", "d").replace("Đ", "D");
+    }
+
+    private String capitalize(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 }
