@@ -95,14 +95,17 @@ public class PrisustvoService {
         };
     }
 
-    public List<PrisustvoViewDTO> getAllForDisplay() {
-        return prisustvoRepository.findAll().stream()
-                .map(p -> new PrisustvoViewDTO(
-                        p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
-                        p.getRadionica().getNaziv(),
-                        p.getStatus(),
-                        getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
-                ))
-                .toList();
+public List<PrisustvoViewDTO> getAllForDisplay() {
+    return prisustvoRepository.findAll().stream()
+            .map(p -> new PrisustvoViewDTO(
+                    p.getId(),
+                    p.getPolaznik().getId(),
+                    p.getRadionica().getId(),
+                    p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
+                    p.getRadionica().getNaziv(),
+                    p.getStatus(),
+                    getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
+            ))
+            .toList();
     }
 }
