@@ -47,7 +47,7 @@ public class PrisustvoService {
                         p.getId(),
                         p.getPolaznik().getId(),
                         p.getRadionica().getId(),
-                        p.getStatus()))
+                    getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
                 .toList();
     }
 
