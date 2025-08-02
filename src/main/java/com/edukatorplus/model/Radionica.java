@@ -15,8 +15,10 @@ public class Radionica {
 
     private String naziv;
 
+    @Lob
+    @Column
     private String opis;
-
+    
     private LocalDate datum;
 
     public Radionica() {
