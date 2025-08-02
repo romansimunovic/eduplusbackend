@@ -1,6 +1,6 @@
 package com.edukatorplus.service;
 
-import com.edukatorplus.dto.PolaznikDTO;
+import com.edukatorplus.DTO.PolaznikDTO;
 import com.edukatorplus.model.Polaznik;
 import com.edukatorplus.repository.PolaznikRepository;
 import com.edukatorplus.repository.PrisustvoRepository;
