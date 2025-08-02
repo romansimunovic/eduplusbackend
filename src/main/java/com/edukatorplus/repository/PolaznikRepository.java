@@ -9,15 +9,17 @@ import java.util.List;
 @Repository
 public interface PolaznikRepository extends JpaRepository<Polaznik, Long> {
 
-    // Pretraga polaznika prema imenu
     List<Polaznik> findByImeContainingIgnoreCase(String ime);
 
-    // Pretraga polaznika prema prezimenu
     List<Polaznik> findByPrezimeContainingIgnoreCase(String prezime);
 
-    // Pretraga polaznika prema emailu
     List<Polaznik> findByEmailContainingIgnoreCase(String email);
 
-    // Pretraga polaznika prema godini rođenja
     List<Polaznik> findByGodinaRodenja(Integer godinaRodenja);
+
+    List<Polaznik> findBySpolIgnoreCase(String spol);
+
+    List<Polaznik> findByGradContainingIgnoreCase(String grad);
+
+    List<Polaznik> findByStatusContainingIgnoreCase(String status);
 }
