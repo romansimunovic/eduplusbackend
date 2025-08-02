@@ -83,6 +83,22 @@ public class PrisustvoService {
         prisustvoRepository.deleteById(id);
     }
 
+    public static String getRodnoOsjetljivStatus(StatusPrisustva status, String spol) {
+    if (spol == null) return status.name().toLowerCase();
+
+    switch (status) {
+        case PRISUTAN:
+            return spol.equalsIgnoreCase("ž") ? "prisutna" : "prisutAN";
+        case IZOSTAO:
+            return spol.equalsIgnoreCase("ž") ? "izostala" : "izostao";
+        case ODUSTAO:
+            return spol.equalsIgnoreCase("ž") ? "odustala" : "odustao";
+        case NEPOZNATO:
+        default:
+            return "nepoznato";
+    }
+}
+
     // ✅ Prikaz za frontend s rodom (spol)
     public List<PrisustvoViewDTO> getAllForDisplay() {
         return prisustvoRepository.findAll().stream()
