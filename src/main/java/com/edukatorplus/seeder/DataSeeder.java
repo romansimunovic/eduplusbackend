@@ -1,18 +1,13 @@
 package com.edukatorplus.seeder;
 
-import javax.annotation.PostConstruct;
+import com.edukatorplus.model.*;
+import com.edukatorplus.repository.*;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.edukatorplus.model.Polaznik;
-import com.edukatorplus.model.Radionica;
-import com.edukatorplus.model.Prisustvo;
-import com.edukatorplus.model.StatusPrisustva;
-import com.edukatorplus.repository.PolaznikRepository;
-import com.edukatorplus.repository.RadionicaRepository;
-import com.edukatorplus.repository.PrisustvoRepository;
-
+import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.*;
 
 @Component
@@ -28,68 +23,64 @@ public class DataSeeder {
     private PrisustvoRepository prisustvoRepo;
 
     private final Faker faker = new Faker();
+    private final Random random = new Random();
 
     @PostConstruct
     public void init() {
+        // Briše stare podatke!
+        prisustvoRepo.deleteAllInBatch();
+        polaznikRepo.deleteAllInBatch();
+        radionicaRepo.deleteAllInBatch();
 
-        
-        prisustvoRepo.deleteAll();
-        polaznikRepo.deleteAll();
-        radionicaRepo.deleteAll();
-
-        //  10 radionica s temama iz neprofitnog sektora
+        // Kreira radionice
         List<String> teme = Arrays.asList(
-                "ljudskim pravima",
-                "rodnoj ravnopravnosti",
-                "prevenciji nasilja",
-                "mentalnom zdravlju",
-                "održivom razvoju",
-                "pravima manjina",
-                "digitalnoj sigurnosti",
-                "inkluziji mladih",
-                "zelenim politikama",
-                "građanskom obrazovanju"
+                "ljudskim pravima", "rodnoj ravnopravnosti", "prevenciji nasilja", "mentalnom zdravlju",
+                "održivom razvoju", "pravima manjina", "digitalnoj sigurnosti", "inkluziji mladih",
+                "zelenim politikama", "građanskom obrazovanju"
         );
 
         List<Radionica> radionice = new ArrayList<>();
-        for (int i = 0; i < teme.size(); i++) {
+        for (String tema : teme) {
             Radionica r = new Radionica();
-            r.setNaziv("Radionica o " + teme.get(i));
-            r.setDatum(faker.date().birthday().toInstant()
-                    .atZone(java.time.ZoneId.systemDefault())
-                    .toLocalDate());
-            radionice.add(radionicaRepo.save(r));
+            r.setNaziv("Radionica o " + tema);
+            r.setDatum(LocalDate.now().minusDays(random.nextInt(30)));
+            radionice.add(r);
         }
+        radionice = radionicaRepo.saveAll(radionice);
 
-        // Dodajemo 30 polaznika
+        // Kreira polaznike
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             Polaznik p = new Polaznik();
             p.setIme(faker.name().firstName());
             p.setPrezime(faker.name().lastName());
-            polaznici.add(polaznikRepo.save(p));
+            polaznici.add(p);
         }
+        polaznici = polaznikRepo.saveAll(polaznici);
 
-       
+        // Generira prisustva
+        List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
-                if (faker.random().nextBoolean()) {
+                if (random.nextBoolean()) {
                     Prisustvo prisustvo = new Prisustvo();
                     prisustvo.setRadionica(r);
                     prisustvo.setPolaznik(p);
                     prisustvo.setStatus(randomStatus());
-                    prisustvoRepo.save(prisustvo);
+                    prisustva.add(prisustvo);
                 }
             }
         }
+        prisustvoRepo.saveAll(prisustva);
     }
 
     private StatusPrisustva randomStatus() {
-        int pick = new Random().nextInt(3);
+        int pick = random.nextInt(4); // uključuje i ODUSTAO
         return switch (pick) {
             case 0 -> StatusPrisustva.PRISUTAN;
             case 1 -> StatusPrisustva.IZOSTAO;
-            default -> StatusPrisustva.NEPOZNATO;
+            case 2 -> StatusPrisustva.NEPOZNATO;
+            default -> StatusPrisustva.ODUSTAO;
         };
     }
 }
