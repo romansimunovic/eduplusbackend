@@ -49,8 +49,14 @@ public class PrisustvoController {
             @ApiResponse(responseCode = "404", description = "Prisustvo nije pronađeno")
     })
     public PrisustvoDTO updatePrisustvo(@PathVariable Long id, @RequestBody PrisustvoDTO prisustvoDTO) {
-        prisustvoDTO.setId(id); // Obavezno postavi ID u DTO ako nije već
-        return prisustvoService.updatePrisustvo(id, prisustvoDTO);
+        // Kreiramo novi DTO s id-om koji dolazi iz URL-a
+        PrisustvoDTO dtoWithId = new PrisustvoDTO(
+                id,
+                prisustvoDTO.polaznikId(),
+                prisustvoDTO.radionicaId(),
+                prisustvoDTO.status()
+        );
+        return prisustvoService.updatePrisustvo(id, dtoWithId);
     }
 
     @DeleteMapping("/{id}")
