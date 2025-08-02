@@ -19,5 +19,5 @@ public interface PolaznikRepository extends JpaRepository<Polaznik, Long> {
     List<Polaznik> findByEmailContainingIgnoreCase(String email);
 
     // Pretraga polaznika prema godini rođenja
-    List<Polaznik> findByGodinaRođenja(Integer godinaRođenja);
+    List<Polaznik> findByGodinaRodenja(Integer godinaRodenja);
 }
