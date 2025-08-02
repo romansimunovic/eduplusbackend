@@ -27,12 +27,10 @@ public class DataSeeder {
 
     @PostConstruct
     public void init() {
-        // Briše stare podatke!
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
 
-        // Kreira radionice
         List<String> teme = Arrays.asList(
                 "ljudskim pravima", "rodnoj ravnopravnosti", "prevenciji nasilja", "mentalnom zdravlju",
                 "održivom razvoju", "pravima manjina", "digitalnoj sigurnosti", "inkluziji mladih",
@@ -48,12 +46,17 @@ public class DataSeeder {
         }
         radionice = radionicaRepo.saveAll(radionice);
 
-        // Kreira polaznike
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
+            String ime = faker.name().firstName();
+            String prezime = faker.name().lastName();
+
             Polaznik p = new Polaznik();
-            p.setIme(faker.name().firstName());
-            p.setPrezime(faker.name().lastName());
+            p.setIme(ime);
+            p.setPrezime(prezime);
+            p.setEmail((ime + "." + prezime + "@example.com").toLowerCase());
+            p.setGodinaRodenja(faker.number().numberBetween(1990, 2010));
+
             polaznici.add(p);
         }
         polaznici = polaznikRepo.saveAll(polaznici);
@@ -75,7 +78,7 @@ public class DataSeeder {
     }
 
     private StatusPrisustva randomStatus() {
-        int pick = random.nextInt(4); // uključuje i ODUSTAO
+        int pick = random.nextInt(4); 
         return switch (pick) {
             case 0 -> StatusPrisustva.PRISUTAN;
             case 1 -> StatusPrisustva.IZOSTAO;
