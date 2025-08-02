@@ -1,6 +1,6 @@
 package com.edukatorplus.controller;
 
-import com.edukatorplus.DTO.PolaznikDTO;
+import com.edukatorplus.dto.PolaznikDTO;
 import com.edukatorplus.service.PolaznikService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
