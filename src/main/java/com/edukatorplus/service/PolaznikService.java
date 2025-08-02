@@ -28,7 +28,7 @@ public class PolaznikService {
                 p.getIme(),
                 p.getPrezime(),
                 p.getEmail(),
-                p.getGodinaRođenja()
+                p.getGodinaRodenja()
         );
     }
 
@@ -52,7 +52,7 @@ public class PolaznikService {
     // Kreira novog polaznika
     @ApiResponse(responseCode = "201", description = "Polaznik uspješno kreiran")
     public PolaznikDTO create(PolaznikDTO dto) {
-        Polaznik p = new Polaznik(dto.ime(), dto.prezime(), dto.email(), dto.godinaRođenja());
+        Polaznik p = new Polaznik(dto.ime(), dto.prezime(), dto.email(), dto.godinaRodenja());
         return toDTO(polaznikRepository.save(p));
     }
 
@@ -68,7 +68,7 @@ public class PolaznikService {
         p.setIme(dto.ime());
         p.setPrezime(dto.prezime());
         p.setEmail(dto.email());
-        p.setGodinaRođenja(dto.godinaRođenja());
+        p.setGodinaRodenja(dto.godinaRodenja());
         return toDTO(polaznikRepository.save(p));
     }
 
