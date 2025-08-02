@@ -1,7 +1,7 @@
 package com.edukatorplus.service;
 
-import com.edukatorplus.DTO.PrisustvoDTO;
-import com.edukatorplus.DTO.PrisustvoViewDTO;
+import com.edukatorplus.dto.PrisustvoDTO;
+import com.edukatorplus.dto.PrisustvoViewDTO;
 import com.edukatorplus.model.Polaznik;
 import com.edukatorplus.model.Prisustvo;
 import com.edukatorplus.model.Radionica;
