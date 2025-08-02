@@ -55,7 +55,7 @@ public class DataSeeder {
             p.setIme(ime);
             p.setPrezime(prezime);
             p.setEmail((ime + "." + prezime + "@example.com").toLowerCase());
-            p.setgodinaRođenja(faker.number().numberBetween(1975, 2010));
+            p.setgodinaRodenja(faker.number().numberBetween(1975, 2010));
 
             polaznici.add(p);
         }
