@@ -28,6 +28,8 @@ public class DataSeeder {
     private final Random random = new Random();
 
     private static final List<String> DOMENE = List.of("gmail.com", "yahoo.com", "outlook.com", "inet.hr", "net.hr");
+    private static final List<String> STATUSI = List.of("student", "zaposlen", "nezaposlen", "učenik");
+    private static final List<String> GRADOVI = List.of("Osijek", "Zagreb", "Rijeka", "Split", "Pula", "Varaždin", "Zadar", "Slavonski Brod");
 
     @PostConstruct
     public void init() {
@@ -39,6 +41,7 @@ public class DataSeeder {
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
 
+        // RADIONICE
         List<String> teme = List.of(
                 "održivom razvoju", "recikliranju otpada", "digitalnoj sigurnosti",
                 "umjetnoj inteligenciji", "informacijskoj pismenosti", "rodnoj ravnopravnosti",
@@ -69,26 +72,36 @@ public class DataSeeder {
 
         radionice = radionicaRepo.saveAll(radionice);
 
+        // POLAZNICI
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
-            String ime = faker.name().firstName();
+            boolean isFemale = random.nextBoolean();
+            String ime = isFemale ? faker.name().firstNameFemale() : faker.name().firstNameMale();
             String prezime = faker.name().lastName();
+            String spol = isFemale ? "ženski" : "muški";
             String cleanIme = removeDiacritics(ime);
             String cleanPrezime = removeDiacritics(prezime);
-
             String broj = random.nextBoolean() ? String.valueOf(random.nextInt(100)) : "";
             String domena = DOMENE.get(random.nextInt(DOMENE.size()));
             String email = (cleanIme + "." + cleanPrezime + broj + "@" + domena).toLowerCase();
+            String telefon = faker.phoneNumber().cellPhone();
+            String grad = GRADOVI.get(random.nextInt(GRADOVI.size()));
+            String status = STATUSI.get(random.nextInt(STATUSI.size()));
 
             Polaznik p = new Polaznik();
             p.setIme(ime);
             p.setPrezime(prezime);
             p.setEmail(email);
             p.setGodinaRodenja(faker.number().numberBetween(1975, 2010));
+            p.setSpol(spol);
+            p.setTelefon(telefon);
+            p.setGrad(grad);
+            p.setStatus(status);
             polaznici.add(p);
         }
         polaznici = polaznikRepo.saveAll(polaznici);
 
+        // PRISUSTVA
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
