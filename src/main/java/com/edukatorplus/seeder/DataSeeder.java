@@ -41,7 +41,7 @@ public class DataSeeder {
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
 
-        // RADIONICE
+        // === RADIONICE ===
         List<String> teme = List.of(
                 "održivom razvoju", "recikliranju otpada", "digitalnoj sigurnosti",
                 "umjetnoj inteligenciji", "informacijskoj pismenosti", "rodnoj ravnopravnosti",
@@ -72,11 +72,11 @@ public class DataSeeder {
 
         radionice = radionicaRepo.saveAll(radionice);
 
-        // POLAZNICI
+        // === POLAZNICI ===
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             boolean isFemale = random.nextBoolean();
-            String ime = isFemale ? faker.name().firstNameFemale() : faker.name().firstNameMale();
+            String ime = faker.name().firstName();
             String prezime = faker.name().lastName();
             String spol = isFemale ? "ženski" : "muški";
             String cleanIme = removeDiacritics(ime);
@@ -99,9 +99,10 @@ public class DataSeeder {
             p.setStatus(status);
             polaznici.add(p);
         }
+
         polaznici = polaznikRepo.saveAll(polaznici);
 
-        // PRISUSTVA
+        // === PRISUSTVA ===
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
