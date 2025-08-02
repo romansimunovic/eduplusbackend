@@ -1,10 +1,10 @@
 package com.edukatorplus.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import java.time.LocalDate; // ✅ OVO JE NEDOSTAJALO
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import java.time.LocalDate; 
 
 @Entity
 public class Radionica {
