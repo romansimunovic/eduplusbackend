@@ -1,6 +1,6 @@
 package com.edukatorplus.service;
 
-import com.edukatorplus.dto.RadionicaDTO;
+import com.edukatorplus.DTO.RadionicaDTO;
 import com.edukatorplus.model.Radionica;
 import com.edukatorplus.repository.PrisustvoRepository;
 import com.edukatorplus.repository.RadionicaRepository;
