@@ -25,7 +25,6 @@ public class PrisustvoService {
     @Autowired
     private RadionicaRepository radionicaRepository;
 
-    // Dodavanje novog prisustva
     public PrisustvoDTO savePrisustvo(PrisustvoDTO dto) {
         Polaznik polaznik = polaznikRepository.findById(dto.polaznikId())
                 .orElseThrow(() -> new RuntimeException("Polaznik nije pronađen"));
@@ -42,7 +41,6 @@ public class PrisustvoService {
         return new PrisustvoDTO(prisustvo.getId(), polaznik.getId(), radionica.getId(), prisustvo.getStatus());
     }
 
-    // Dohvaćanje svih prisustava
     public List<PrisustvoDTO> getAllPrisustva() {
         return prisustvoRepository.findAll().stream()
                 .map(p -> new PrisustvoDTO(
@@ -53,7 +51,6 @@ public class PrisustvoService {
                 .toList();
     }
 
-    // Ažuriranje postojećeg prisustva
     public PrisustvoDTO updatePrisustvo(Long id, PrisustvoDTO dto) {
         Prisustvo prisustvo = prisustvoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Prisustvo nije pronađeno"));
@@ -72,29 +69,30 @@ public class PrisustvoService {
     }
 
     public PrisustvoDTO getPrisustvo(Long id) {
-    Prisustvo prisustvo = prisustvoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Prisustvo nije pronađeno"));
-    return new PrisustvoDTO(
-            prisustvo.getId(),
-            prisustvo.getPolaznik().getId(),
-            prisustvo.getRadionica().getId(),
-            prisustvo.getStatus()
-    );
-}
+        Prisustvo prisustvo = prisustvoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prisustvo nije pronađeno"));
+        return new PrisustvoDTO(
+                prisustvo.getId(),
+                prisustvo.getPolaznik().getId(),
+                prisustvo.getRadionica().getId(),
+                prisustvo.getStatus()
+        );
+    }
 
-    // Brisanje prisustva
     public void deletePrisustvo(Long id) {
         prisustvoRepository.deleteById(id);
     }
 
-    // Prikaz za frontend
+    // ✅ Prikaz za frontend s rodom (spol)
     public List<PrisustvoViewDTO> getAllForDisplay() {
         return prisustvoRepository.findAll().stream()
                 .map(p -> new PrisustvoViewDTO(
                         p.getId(),
                         p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
                         p.getRadionica().getNaziv(),
-                        p.getStatus().name()))
+                        p.getStatus().name(),
+                        p.getPolaznik().getSpol() 
+                ))
                 .toList();
     }
 }
