@@ -80,7 +80,6 @@ public class DataSeeder {
             Radionica r = new Radionica();
             r.setNaziv(naziv);
             r.setDatum(LocalDate.now().plusDays(random.nextInt(30)));
-            r.setOpis(generirajOpis(tema, kontekst));
             return r;
         }).toList();
 
@@ -132,13 +131,5 @@ public class DataSeeder {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
         return Pattern.compile("\\p{InCombiningDiacriticalMarks}+").matcher(normalized).replaceAll("")
                 .replace("đ", "d").replace("Đ", "D");
-    }
-
-    private String generirajOpis(String tema, String kontekst) {
-        String genitiv = TEMA_U_GENITIVU.getOrDefault(tema, tema);
-        return "Ova radionica usmjerena je na " + tema + " " + kontekst +
-                ", s ciljem osnaživanja sudionika kroz razmjenu znanja, praktične primjere i grupni rad. " +
-                "Sudionici će razviti vještine i razumijevanje važnosti " + genitiv +
-                " u svakodnevnom i profesionalnom kontekstu, uz naglasak na inkluziju, solidarnost i aktivno građanstvo.";
     }
 }
