@@ -19,53 +19,26 @@ public class PolaznikController {
     private PolaznikService polaznikService;
 
     @GetMapping
-    @Operation(summary = "Dohvati sve polaznike", responses = {
-            @ApiResponse(responseCode = "200", description = "Polaznici pronađeni"),
-            @ApiResponse(responseCode = "404", description = "Polaznici nisu pronađeni")
-    })
     public List<PolaznikDTO> getAll() {
         return polaznikService.getAll();
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Dohvati polaznika prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Polaznik pronađen"),
-            @ApiResponse(responseCode = "404", description = "Polaznik s tim ID-om nije pronađen")
-    })
     public PolaznikDTO getById(@PathVariable Long id) {
-        PolaznikDTO polaznikDTO = polaznikService.getById(id);
-        if (polaznikDTO == null) {
-            throw new RuntimeException("Polaznik s ID-om " + id + " nije pronađen");
-        }
-        return polaznikDTO;
+        return polaznikService.getById(id);
     }
 
     @PostMapping
-    @Operation(summary = "Kreiraj novog polaznika", responses = {
-            @ApiResponse(responseCode = "201", description = "Polaznik uspješno kreiran")
-    })
     public PolaznikDTO create(@RequestBody PolaznikDTO dto) {
         return polaznikService.create(dto);
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Ažuriraj polaznika prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Polaznik uspješno ažuriran"),
-            @ApiResponse(responseCode = "404", description = "Polaznik s tim ID-om nije pronađen")
-    })
     public PolaznikDTO update(@PathVariable Long id, @RequestBody PolaznikDTO dto) {
-        PolaznikDTO updatedPolaznik = polaznikService.update(id, dto);
-        if (updatedPolaznik == null) {
-            throw new RuntimeException("Polaznik s ID-om " + id + " nije pronađen");
-        }
-        return updatedPolaznik;
+        return polaznikService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Obriši polaznika prema ID-u", responses = {
-            @ApiResponse(responseCode = "200", description = "Polaznik uspješno obrisan"),
-            @ApiResponse(responseCode = "404", description = "Polaznik s tim ID-om nije pronađen")
-    })
     public void delete(@PathVariable Long id) {
         polaznikService.delete(id);
     }
