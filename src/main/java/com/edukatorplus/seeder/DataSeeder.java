@@ -47,10 +47,16 @@ public class DataSeeder {
             "u nevladinim organizacijama", "u knjižnicama", "putem online platformi", "na društvenim mrežama"
     );
 
-    // ✅ Popis stvarnih ženskih imena (možeš proširiti)
-    private static final Set<String> ZENSKA_IMENA = Set.of(
-            "Ana", "Marija", "Ivana", "Lucija", "Petra", "Martina", "Ines", "Maja",
-            "Sara", "Lana", "Nika", "Ema", "Katarina", "Paula", "Tea", "Lea", "Iva", "Dora", "Ela", "Nina"
+    private static final List<String> MUSKA_IMENA = List.of(
+            "Roman", "Sebastijan", "Marko", "Luka", "Ivan", "Petar", "Filip", "Karlo", "David", "Ante",
+            "Tomislav", "Stjepan", "Domagoj", "Fran", "Josip", "Lovro", "Leon", "Noa", "Nikola", "Borna",
+            "Matija", "Tin", "Matej", "Marin", "Kristijan", "Zvonimir", "Jakov", "Emanuel", "Hrvoje", "Viktor"
+    );
+
+    private static final List<String> ZENSKA_IMENA = List.of(
+            "Romana", "Ines", "Ana", "Marija", "Lucija", "Maja", "Petra", "Martina", "Sara", "Lana",
+            "Ivana", "Ema", "Lea", "Nina", "Katarina", "Dora", "Matea", "Laura", "Tena", "Andrea",
+            "Mirta", "Tea", "Jelena", "Paula", "Elena", "Gabrijela", "Antonija", "Rebeka", "Helena", "Iva"
     );
 
     @PostConstruct
@@ -81,15 +87,26 @@ public class DataSeeder {
 
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
-            String ime = faker.name().firstName();
+            boolean zensko = random.nextBoolean();
+
+            String ime;
+            if (zensko) {
+                ime = random.nextBoolean()
+                        ? ZENSKA_IMENA.get(random.nextInt(ZENSKA_IMENA.size()))
+                        : faker.name().firstName();
+            } else {
+                ime = random.nextBoolean()
+                        ? MUSKA_IMENA.get(random.nextInt(MUSKA_IMENA.size()))
+                        : faker.name().firstName();
+            }
+
             String prezime = faker.name().lastName();
             String cleanIme = removeDiacritics(ime);
             String cleanPrezime = removeDiacritics(prezime);
             String broj = random.nextBoolean() ? String.valueOf(random.nextInt(100)) : "";
             String email = (cleanIme + "." + cleanPrezime + broj + "@" + DOMENE.get(random.nextInt(DOMENE.size()))).toLowerCase();
 
-            // ✅ Koristi točan spol po stvarnom imenu
-            String spol = ZENSKA_IMENA.contains(ime) ? "ženski" : "muški";
+            String spol = zensko ? "ženski" : "muški";
 
             Polaznik p = new Polaznik();
             p.setIme(ime);
