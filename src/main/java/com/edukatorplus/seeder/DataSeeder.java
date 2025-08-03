@@ -69,6 +69,7 @@ public class DataSeeder {
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
 
+        // 1. Radionice
         Set<String> kombinacije = new HashSet<>();
         while (kombinacije.size() < 12) {
             String tema = TEME.get(random.nextInt(TEME.size()));
@@ -85,20 +86,13 @@ public class DataSeeder {
         }).toList();
         radionice = radionicaRepo.saveAll(radionice);
 
+        // 2. Polaznici
         List<Polaznik> polaznici = new ArrayList<>();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 40; i++) {
             boolean zensko = random.nextBoolean();
-
-            String ime;
-            if (zensko) {
-                ime = random.nextBoolean()
-                        ? ZENSKA_IMENA.get(random.nextInt(ZENSKA_IMENA.size()))
-                        : faker.name().firstName();
-            } else {
-                ime = random.nextBoolean()
-                        ? MUSKA_IMENA.get(random.nextInt(MUSKA_IMENA.size()))
-                        : faker.name().firstName();
-            }
+            String ime = zensko
+                    ? ZENSKA_IMENA.get(random.nextInt(ZENSKA_IMENA.size()))
+                    : MUSKA_IMENA.get(random.nextInt(MUSKA_IMENA.size()));
 
             String prezime = faker.name().lastName();
             String cleanIme = removeDiacritics(ime);
@@ -106,12 +100,10 @@ public class DataSeeder {
             String broj = random.nextBoolean() ? String.valueOf(random.nextInt(100)) : "";
             String email = (cleanIme + "." + cleanPrezime + broj + "@" + DOMENE.get(random.nextInt(DOMENE.size()))).toLowerCase();
 
-            String spol = zensko ? "ženski" : "muški";
-
             Polaznik p = new Polaznik();
             p.setIme(ime);
             p.setPrezime(prezime);
-            p.setSpol(spol);
+            p.setSpol(zensko ? "ženski" : "muški");
             p.setEmail(email);
             p.setTelefon(faker.phoneNumber().cellPhone());
             p.setGodinaRodenja(faker.number().numberBetween(1975, 2007));
@@ -121,6 +113,7 @@ public class DataSeeder {
         }
         polaznici = polaznikRepo.saveAll(polaznici);
 
+        // 3. Prisustva
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
