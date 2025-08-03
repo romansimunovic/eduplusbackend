@@ -14,16 +14,9 @@ public class Radionica {
     private Long id;
 
     private String naziv;
-   
     private LocalDate datum;
 
     public Radionica() {
-    }
-
-    public Radionica(String naziv, String opis, LocalDate datum) {
-        this.naziv = naziv;
-        this.opis = opis;
-        this.datum = datum;
     }
 
     public Radionica(String naziv, LocalDate datum) {
