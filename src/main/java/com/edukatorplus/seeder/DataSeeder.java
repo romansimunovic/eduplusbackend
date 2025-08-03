@@ -103,7 +103,7 @@ public class DataSeeder {
             Polaznik p = new Polaznik();
             p.setIme(ime);
             p.setPrezime(prezime);
-            p.setSpol(zensko ? "ženski" : "muški");
+            p.setSpol(zensko ? "Ž" : "M");
             p.setEmail(email);
             p.setTelefon(faker.phoneNumber().cellPhone());
             p.setGodinaRodenja(faker.number().numberBetween(1975, 2007));
