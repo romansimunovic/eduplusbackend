@@ -47,6 +47,12 @@ public class DataSeeder {
             "u nevladinim organizacijama", "u knjižnicama", "putem online platformi", "na društvenim mrežama"
     );
 
+    // ✅ Popis stvarnih ženskih imena (možeš proširiti)
+    private static final Set<String> ZENSKA_IMENA = Set.of(
+            "Ana", "Marija", "Ivana", "Lucija", "Petra", "Martina", "Ines", "Maja",
+            "Sara", "Lana", "Nika", "Ema", "Katarina", "Paula", "Tea", "Lea", "Iva", "Dora", "Ela", "Nina"
+    );
+
     @PostConstruct
     public void init() {
         generateNewData();
@@ -77,11 +83,13 @@ public class DataSeeder {
         for (int i = 0; i < 30; i++) {
             String ime = faker.name().firstName();
             String prezime = faker.name().lastName();
-            String spol = ime.toLowerCase().endsWith("a") ? "ženski" : "muški";
             String cleanIme = removeDiacritics(ime);
             String cleanPrezime = removeDiacritics(prezime);
             String broj = random.nextBoolean() ? String.valueOf(random.nextInt(100)) : "";
             String email = (cleanIme + "." + cleanPrezime + broj + "@" + DOMENE.get(random.nextInt(DOMENE.size()))).toLowerCase();
+
+            // ✅ Koristi točan spol po stvarnom imenu
+            String spol = ZENSKA_IMENA.contains(ime) ? "ženski" : "muški";
 
             Polaznik p = new Polaznik();
             p.setIme(ime);
@@ -99,7 +107,7 @@ public class DataSeeder {
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
-                if (random.nextDouble() < 0.75) { 
+                if (random.nextDouble() < 0.75) {
                     Prisustvo pr = new Prisustvo();
                     pr.setRadionica(r);
                     pr.setPolaznik(p);
