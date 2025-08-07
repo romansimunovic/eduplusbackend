@@ -27,6 +27,15 @@ public class PrisustvoController {
         return prisustvoService.getAllPrisustva();
     }
 
+
+       @GetMapping("/view/{radionicaId}")
+    @Operation(summary = "Dohvati prikaz prisustava za određenu radionicu", responses = {
+        @ApiResponse(responseCode = "200", description = "Formatirani podaci o prisustvima za radionicu")
+})
+public List<PrisustvoViewDTO> getByRadionica(@PathVariable Long radionicaId) {
+    return prisustvoService.getAllForRadionica(radionicaId);
+
+
     @GetMapping("/view")
     @Operation(summary = "Dohvati prikaz prisustava (ime, radionica, status)", responses = {
             @ApiResponse(responseCode = "200", description = "Formatirani podaci o prisustvima")
@@ -67,4 +76,5 @@ public class PrisustvoController {
     public void deletePrisustvo(@PathVariable Long id) {
         prisustvoService.deletePrisustvo(id);
     }
+    
 }
