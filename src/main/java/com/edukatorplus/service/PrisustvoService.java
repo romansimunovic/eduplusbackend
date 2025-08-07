@@ -108,4 +108,20 @@ public List<PrisustvoViewDTO> getAllForDisplay() {
             ))
             .toList();
     }
+
+    public List<PrisustvoViewDTO> getAllForRadionica(Long radionicaId) {
+    return prisustvoRepository.findAll().stream()
+            .filter(p -> p.getRadionica().getId().equals(radionicaId))
+            .map(p -> new PrisustvoViewDTO(
+                    p.getId(),
+                    p.getPolaznik().getId(),
+                    p.getRadionica().getId(),
+                    p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
+                    p.getRadionica().getNaziv(),
+                    p.getStatus(),
+                    getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
+            ))
+            .toList();
+}
+
 }
