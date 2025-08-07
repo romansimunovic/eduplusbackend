@@ -124,4 +124,10 @@ public List<PrisustvoViewDTO> getAllForDisplay() {
             .toList();
 }
 
+    public List<PrisustvoView> findByPolaznikId(Long id) {
+    return prisustvoRepo.findByPolaznikId(id).stream()
+        .map(prisustvoMapper::toView)
+        .collect(Collectors.toList());
+}
+
 }
