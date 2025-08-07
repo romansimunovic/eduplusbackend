@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PrisustvoService {
@@ -26,6 +27,7 @@ public class PrisustvoService {
     @Autowired
     private RadionicaRepository radionicaRepository;
 
+    // Dodavanje i ažuriranje
     public PrisustvoDTO savePrisustvo(PrisustvoDTO dto) {
         Polaznik polaznik = polaznikRepository.findById(dto.polaznikId())
                 .orElseThrow(() -> new RuntimeException("Polaznik nije pronađen"));
@@ -38,18 +40,7 @@ public class PrisustvoService {
         prisustvo.setStatus(dto.status());
 
         prisustvo = prisustvoRepository.save(prisustvo);
-
-        return new PrisustvoDTO(prisustvo.getId(), polaznik.getId(), radionica.getId(), prisustvo.getStatus());
-    }
-
-    public List<PrisustvoDTO> getAllPrisustva() {
-        return prisustvoRepository.findAll().stream()
-                .map(p -> new PrisustvoDTO(
-                        p.getId(),
-                        p.getPolaznik().getId(),
-                        p.getRadionica().getId(),
-                        p.getStatus()))
-                .toList();
+        return toDto(prisustvo);
     }
 
     public PrisustvoDTO updatePrisustvo(Long id, PrisustvoDTO dto) {
@@ -66,22 +57,66 @@ public class PrisustvoService {
         prisustvo.setStatus(dto.status());
 
         prisustvo = prisustvoRepository.save(prisustvo);
-        return new PrisustvoDTO(prisustvo.getId(), polaznik.getId(), radionica.getId(), prisustvo.getStatus());
+        return toDto(prisustvo);
+    }
+
+    // Dohvaćanje svih prisustava (u DTO formatu)
+    public List<PrisustvoDTO> getAllPrisustva() {
+        return prisustvoRepository.findAll().stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
     }
 
     public PrisustvoDTO getPrisustvo(Long id) {
-        Prisustvo prisustvo = prisustvoRepository.findById(id)
+        return prisustvoRepository.findById(id)
+                .map(this::toDto)
                 .orElseThrow(() -> new RuntimeException("Prisustvo nije pronađeno"));
-        return new PrisustvoDTO(
-                prisustvo.getId(),
-                prisustvo.getPolaznik().getId(),
-                prisustvo.getRadionica().getId(),
-                prisustvo.getStatus()
-        );
     }
 
     public void deletePrisustvo(Long id) {
         prisustvoRepository.deleteById(id);
+    }
+
+    // Za prikaz (ViewDTO)
+    public List<PrisustvoViewDTO> getAllForDisplay() {
+        return prisustvoRepository.findAll().stream()
+                .map(this::toViewDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PrisustvoViewDTO> getAllForRadionica(Long radionicaId) {
+        return prisustvoRepository.findAll().stream()
+                .filter(p -> p.getRadionica().getId().equals(radionicaId))
+                .map(this::toViewDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<PrisustvoViewDTO> findByPolaznikId(Long id) {
+        return prisustvoRepository.findByPolaznikId(id).stream()
+                .map(this::toViewDto)
+                .collect(Collectors.toList());
+    }
+
+    // Helper metode
+    private PrisustvoDTO toDto(Prisustvo p) {
+        return new PrisustvoDTO(
+                p.getId(),
+                p.getPolaznik().getId(),
+                p.getRadionica().getId(),
+                p.getStatus()
+        );
+    }
+
+    private PrisustvoViewDTO toViewDto(Prisustvo p) {
+        return new PrisustvoViewDTO(
+                p.getId(),
+                p.getPolaznik().getId(),
+                p.getRadionica().getId(),
+                p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
+                p.getRadionica().getNaziv(),
+                p.getStatus(),
+                getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
+        );
     }
 
     public static String getRodnoOsjetljivStatus(StatusPrisustva status, String spol) {
@@ -94,40 +129,4 @@ public class PrisustvoService {
             case NEPOZNATO -> "nepoznato";
         };
     }
-
-public List<PrisustvoViewDTO> getAllForDisplay() {
-    return prisustvoRepository.findAll().stream()
-            .map(p -> new PrisustvoViewDTO(
-                    p.getId(),
-                    p.getPolaznik().getId(),
-                    p.getRadionica().getId(),
-                    p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
-                    p.getRadionica().getNaziv(),
-                    p.getStatus(),
-                    getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
-            ))
-            .toList();
-    }
-
-    public List<PrisustvoViewDTO> getAllForRadionica(Long radionicaId) {
-    return prisustvoRepository.findAll().stream()
-            .filter(p -> p.getRadionica().getId().equals(radionicaId))
-            .map(p -> new PrisustvoViewDTO(
-                    p.getId(),
-                    p.getPolaznik().getId(),
-                    p.getRadionica().getId(),
-                    p.getPolaznik().getIme() + " " + p.getPolaznik().getPrezime(),
-                    p.getRadionica().getNaziv(),
-                    p.getStatus(),
-                    getRodnoOsjetljivStatus(p.getStatus(), p.getPolaznik().getSpol())
-            ))
-            .toList();
-}
-
-    public List<PrisustvoViewDTO> findByPolaznikId(Long id) {
-    return prisustvoRepo.findByPolaznikId(id).stream()
-        .map(prisustvoMapper::toView)
-        .collect(Collectors.toList());
-}
-
 }
