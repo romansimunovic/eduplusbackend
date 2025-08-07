@@ -28,7 +28,7 @@ public class PrisustvoController {
     }
 
     @GetMapping("/polaznik/{id}")
-public List<PrisustvoView> getPrisustvaZaPolaznika(@PathVariable Long id) {
+public List<PrisustvoViewDTO> getPrisustvaZaPolaznika(@PathVariable Long id) {
     return prisustvoService.findByPolaznikId(id);
 }
 
