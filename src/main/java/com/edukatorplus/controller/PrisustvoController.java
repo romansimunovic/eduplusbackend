@@ -27,6 +27,11 @@ public class PrisustvoController {
         return prisustvoService.getAllPrisustva();
     }
 
+    @GetMapping("/polaznik/{id}")
+public List<PrisustvoView> getPrisustvaZaPolaznika(@PathVariable Long id) {
+    return prisustvoService.findByPolaznikId(id);
+}
+
     @GetMapping("/view")
     @Operation(summary = "Dohvati prikaz prisustava (ime, radionica, status)", responses = {
             @ApiResponse(responseCode = "200", description = "Formatirani podaci o prisustvima")
