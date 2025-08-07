@@ -27,21 +27,20 @@ public class PrisustvoController {
         return prisustvoService.getAllPrisustva();
     }
 
-
-       @GetMapping("/view/{radionicaId}")
-    @Operation(summary = "Dohvati prikaz prisustava za određenu radionicu", responses = {
-        @ApiResponse(responseCode = "200", description = "Formatirani podaci o prisustvima za radionicu")
-})
-public List<PrisustvoViewDTO> getByRadionica(@PathVariable Long radionicaId) {
-    return prisustvoService.getAllForRadionica(radionicaId);
-
-
     @GetMapping("/view")
     @Operation(summary = "Dohvati prikaz prisustava (ime, radionica, status)", responses = {
             @ApiResponse(responseCode = "200", description = "Formatirani podaci o prisustvima")
     })
     public List<PrisustvoViewDTO> getAllPrisustvaView() {
         return prisustvoService.getAllForDisplay();
+    }
+
+    @GetMapping("/view/{radionicaId}")
+    @Operation(summary = "Dohvati prikaz prisustava za određenu radionicu", responses = {
+            @ApiResponse(responseCode = "200", description = "Formatirani podaci o prisustvima za radionicu")
+    })
+    public List<PrisustvoViewDTO> getByRadionica(@PathVariable Long radionicaId) {
+        return prisustvoService.getAllForRadionica(radionicaId);
     }
 
     @PostMapping
@@ -58,7 +57,6 @@ public List<PrisustvoViewDTO> getByRadionica(@PathVariable Long radionicaId) {
             @ApiResponse(responseCode = "404", description = "Prisustvo nije pronađeno")
     })
     public PrisustvoDTO updatePrisustvo(@PathVariable Long id, @RequestBody PrisustvoDTO prisustvoDTO) {
-        // Kreiramo novi DTO s id-om koji dolazi iz URL-a
         PrisustvoDTO dtoWithId = new PrisustvoDTO(
                 id,
                 prisustvoDTO.polaznikId(),
@@ -76,5 +74,4 @@ public List<PrisustvoViewDTO> getByRadionica(@PathVariable Long radionicaId) {
     public void deletePrisustvo(@PathVariable Long id) {
         prisustvoService.deletePrisustvo(id);
     }
-    
 }
