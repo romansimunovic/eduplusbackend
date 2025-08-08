@@ -4,6 +4,7 @@ import com.edukatorplus.model.*;
 import com.edukatorplus.repository.*;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
@@ -11,7 +12,6 @@ import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Pattern;
-
 
 @Component
 public class DataSeeder {
@@ -24,6 +24,12 @@ public class DataSeeder {
 
     @Autowired
     private PrisustvoRepository prisustvoRepo;
+
+    @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private final Faker faker = new Faker(new Locale("hr"));
     private final Random random = new Random();
@@ -48,17 +54,13 @@ public class DataSeeder {
             "u nevladinim organizacijama", "u knjižnicama", "putem online platformi", "na društvenim mrežama"
     );
 
-    private static final List<String> MUSKA_IMENA = List.of(
-            "Roman", "Sebastijan", "Marko", "Luka", "Ivan", "Petar", "Filip", "Karlo", "David", "Ante",
+    private static final List<String> MUSKA_IMENA = List.of("Roman", "Sebastijan", "Marko", "Luka", "Ivan", "Petar", "Filip", "Karlo", "David", "Ante",
             "Tomislav", "Stjepan", "Domagoj", "Fran", "Josip", "Lovro", "Leon", "Noa", "Nikola", "Borna",
-            "Matija", "Tin", "Matej", "Marin", "Kristijan", "Zvonimir", "Jakov", "Emanuel", "Hrvoje", "Viktor"
-    );
+            "Matija", "Tin", "Matej", "Marin", "Kristijan", "Zvonimir", "Jakov", "Emanuel", "Hrvoje", "Viktor");
 
-    private static final List<String> ZENSKA_IMENA = List.of(
-            "Romana", "Ines", "Ana", "Marija", "Lucija", "Maja", "Petra", "Martina", "Sara", "Lana",
+    private static final List<String> ZENSKA_IMENA = List.of("Romana", "Ines", "Ana", "Marija", "Lucija", "Maja", "Petra", "Martina", "Sara", "Lana",
             "Ivana", "Ema", "Lea", "Nina", "Katarina", "Dora", "Matea", "Laura", "Tena", "Andrea",
-            "Mirta", "Tea", "Jelena", "Paula", "Elena", "Gabrijela", "Antonija", "Rebeka", "Helena", "Iva"
-    );
+            "Mirta", "Tea", "Jelena", "Paula", "Elena", "Gabrijela", "Antonija", "Rebeka", "Helena", "Iva");
 
     @PostConstruct
     public void init() {
@@ -69,8 +71,10 @@ public class DataSeeder {
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
+        userRepo.deleteAllInBatch();
 
-        // 1. Radionice
+        seedAdminUser();
+
         Set<String> kombinacije = new HashSet<>();
         while (kombinacije.size() < 12) {
             String tema = TEME.get(random.nextInt(TEME.size()));
@@ -87,7 +91,6 @@ public class DataSeeder {
         }).toList();
         radionice = radionicaRepo.saveAll(radionice);
 
-        // 2. Polaznici
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 40; i++) {
             boolean zensko = random.nextBoolean();
@@ -114,7 +117,6 @@ public class DataSeeder {
         }
         polaznici = polaznikRepo.saveAll(polaznici);
 
-        // 3. Prisustva
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
@@ -128,6 +130,14 @@ public class DataSeeder {
             }
         }
         prisustvoRepo.saveAll(prisustva);
+    }
+
+    private void seedAdminUser() {
+        User user = new User();
+        user.setEmail("admin@gmail.com");
+        user.setPassword(passwordEncoder.encode("pass"));
+        user.setRole("ADMIN");
+        userRepo.save(user);
     }
 
     private StatusPrisustva randomStatus() {
