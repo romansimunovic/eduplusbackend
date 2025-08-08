@@ -6,11 +6,12 @@ import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Pattern;
+
 
 @Component
 public class DataSeeder {
