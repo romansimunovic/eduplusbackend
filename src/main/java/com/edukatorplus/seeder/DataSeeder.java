@@ -26,7 +26,7 @@ public class DataSeeder {
     private PrisustvoRepository prisustvoRepo;
 
     @Autowired
-    private UserRepository userRepo;
+    private AppUserRepository userRepo;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -133,7 +133,7 @@ public class DataSeeder {
     }
 
     private void seedAdminUser() {
-        User user = new User();
+        AppUser user = new AppUser();
         user.setEmail("admin@gmail.com");
         user.setPassword(passwordEncoder.encode("pass"));
         user.setRole("ADMIN");
