@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +20,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // omogućava @PreAuthorize na metodama/controllerima
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
@@ -31,7 +33,7 @@ public class SecurityConfig {
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
-    // može doći iz application*.yml (app.enableDevEndpoints) ili direktno iz env var ENABLE_DEV_ENDPOINTS
+    // može doći iz application*.yml (app.enableDevEndpoints) ili iz env var ENABLE_DEV_ENDPOINTS
     @Value("${app.enableDevEndpoints:${ENABLE_DEV_ENDPOINTS:false}}")
     private boolean enableDevEndpoints;
 
@@ -42,6 +44,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
+                // Public
                 auth.requestMatchers(
                         "/api/auth/**",
                         "/api/ping",
@@ -50,16 +53,21 @@ public class SecurityConfig {
                         "/v3/api-docs/**"
                 ).permitAll();
 
+                // CORS preflight
                 auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
+                // Admin tools (radi i u produkciji)
+                auth.requestMatchers("/api/admin/**").hasRole("ADMIN");
+
+                // Dev endpointi samo kad je dev profil ili ručno enable-an flag
                 boolean devMode = "dev".equalsIgnoreCase(activeProfile) || enableDevEndpoints;
                 if (devMode) {
-                    // samo ADMIN smije na /api/dev/**
                     auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
                 } else {
                     auth.requestMatchers("/api/dev/**").denyAll();
                 }
 
+                // Sve ostalo treba auth
                 auth.anyRequest().authenticated();
             })
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -68,7 +76,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
+    public PasswordEncoder passwordEncoder() { 
+        return new BCryptPasswordEncoder(); 
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
