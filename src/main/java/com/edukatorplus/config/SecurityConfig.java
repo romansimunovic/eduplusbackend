@@ -1,7 +1,6 @@
 package com.edukatorplus.config;
 
 import com.edukatorplus.service.JwtFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,14 +26,6 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
-    // npr. dev | prod
-    @Value("${spring.profiles.active:}")
-    private String activeProfile;
-
-    // čita app.enableDevEndpoints ili direktno env ENABLE_DEV_ENDPOINTS
-    @Value("${app.enableDevEndpoints:${ENABLE_DEV_ENDPOINTS:false}}")
-    private boolean enableDevEndpoints;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -42,7 +33,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
-                // public rute
+                // Public rute
                 auth.requestMatchers(
                         "/api/auth/**",
                         "/api/ping",
@@ -51,19 +42,10 @@ public class SecurityConfig {
                         "/v3/api-docs/**"
                 ).permitAll();
 
-                // preflight
+                // Preflight
                 auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
-                // DEV util rute
-                boolean devMode = "dev".equalsIgnoreCase(activeProfile);
-                if (devMode || enableDevEndpoints) {
-                    // samo ADMIN smije
-                    auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
-                } else {
-                    auth.requestMatchers("/api/dev/**").denyAll();
-                }
-
-                // sve ostalo treba valjan JWT
+                // Sve ostalo traži valjan JWT
                 auth.anyRequest().authenticated();
             })
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -72,7 +54,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
