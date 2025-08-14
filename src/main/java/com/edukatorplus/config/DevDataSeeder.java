@@ -55,7 +55,8 @@ public class DevDataSeeder {
         "Mirta","Tea","Jelena","Paula","Elena","Gabrijela","Antonija","Rebeka","Helena","Iva"
     );
 
-    public DataSeeder(
+    // ↓↓↓ OVO JE BILO KRIVO: DataSeeder(...) → treba DevDataSeeder(...)
+    public DevDataSeeder(
             PolaznikRepository polaznikRepo,
             RadionicaRepository radionicaRepo,
             PrisustvoRepository prisustvoRepo,
@@ -81,19 +82,16 @@ public class DevDataSeeder {
     }
 
     private void seedAdminUser() {
-        // ako koristiš hasRole("ADMIN"), onda u GrantedAuthorities treba biti "ROLE_ADMIN".
-        // Ovisno o tvojoj JWT logici, možda ovdje želiš spremiti "ADMIN", a prefiks "ROLE_"
-        // dodaješ pri mapiranju u UserDetails. Ako ne, stavi "ROLE_ADMIN".
         AppUser admin = new AppUser();
         admin.setEmail("admin@gmail.com");
         admin.setPassword(passwordEncoder.encode("pass"));
-        admin.setRole("ADMIN"); // ili "ROLE_ADMIN" ako tako očekuješ
+        admin.setRole("ADMIN"); // ili "ROLE_ADMIN" ovisno o tvojoj Security konfiguraciji
         userRepo.save(admin);
 
         AppUser user = new AppUser();
         user.setEmail("user@gmail.com");
         user.setPassword(passwordEncoder.encode("pass"));
-        user.setRole("USER"); // ili "ROLE_USER"
+        user.setRole("USER");
         userRepo.save(user);
     }
 
