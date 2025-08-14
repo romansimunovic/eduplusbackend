@@ -3,7 +3,6 @@ package com.edukatorplus.config;
 import com.edukatorplus.model.*;
 import com.edukatorplus.repository.*;
 import net.datafaker.Faker;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.CommandLineRunner;
@@ -14,7 +13,6 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Component
-@Profile("dev") // ✅ radi samo u dev profilu
 public class DevDataSeeder implements CommandLineRunner {
 
     private final PolaznikRepository polaznikRepo;
