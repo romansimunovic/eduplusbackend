@@ -34,41 +34,28 @@ public class AuthController {
             AuthResponse resp = authService.login(request);
             return ResponseEntity.ok(resp);
         } catch (IllegalArgumentException | IllegalStateException ex) {
-            // npr. “user not found” / “bad credentials”
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ex.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Login error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Login error");
         }
     }
 
     /**
      * Registracija korisnika.
-     * Rola se može zadati kao query param (?role=ADMIN) ili u body-ju (request.role).
-     * Ako nije zadano, default je USER.
+     * Rola se zadaje kao query param (?role=ADMIN). Ako nije zadano, default je USER.
      * 201 Created na uspjeh.
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(
-            @RequestParam(value = "role", required = false) String roleFromQuery,
+            @RequestParam(value = "role", required = false, defaultValue = "USER") String roleFromQuery,
             @RequestBody AuthRequest request) {
-
-        String role = (roleFromQuery != null && !roleFromQuery.isBlank())
-                ? roleFromQuery
-                : (request.getRole() != null && !request.getRole().isBlank()
-                    ? request.getRole()
-                    : "USER");
-
         try {
-            authService.register(request, role.toUpperCase());
+            authService.register(request, roleFromQuery.toUpperCase());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalArgumentException ex) {
-            // npr. “email already exists”
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Registration error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration error");
         }
     }
 
@@ -84,8 +71,7 @@ public class AuthController {
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Registration error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Registration error");
         }
     }
 }
