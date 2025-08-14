@@ -1,0 +1,23 @@
+spring:
+  jackson:
+    date-format: yyyy-MM-dd
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+# Ako lokalno želiš 8080 kad ne koristiš Docker
+server:
+  port: 8080
+
+jwt:
+  issuer: eduplus
+  expDays: 1
