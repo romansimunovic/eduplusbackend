@@ -11,9 +11,9 @@ import java.util.Map;
 @RequestMapping(value = "/api/admin", produces = "application/json")
 public class AdminToolsController {
 
-    private final DataSeeder seeder;
+    private final DevDataSeeder seeder;
 
-    public AdminToolsController(DataSeeder seeder) {
+    public AdminToolsController(DevDataSeeder seeder) {
         this.seeder = seeder;
     }
 
