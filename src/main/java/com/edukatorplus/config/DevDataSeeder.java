@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Component
-public class DataSeeder {
+public class DevDataSeeder {
 
     private final PolaznikRepository polaznikRepo;
     private final RadionicaRepository radionicaRepo;
