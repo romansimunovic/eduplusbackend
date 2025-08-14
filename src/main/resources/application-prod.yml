@@ -6,12 +6,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: update   # prod: NIKAD create-drop
     show-sql: true
 
 jwt:
-  secret: ${JWT_SECRET}
-  issuer: eduplus
-  expDays: 1
-
-# na Renderu port dolazi iz ENV PORT (Dockerfile već dodaje -Dserver.port=$PORT)
+  secret: ${JWT_SECRET}   # postavi u Render env
