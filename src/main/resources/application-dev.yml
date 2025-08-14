@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/eduplus_dev
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+jwt:
+  # lokalno ne treba env: default iz koda ili postavi ovdje
+  secret: dev_super_secret_key_32bytes_min__ok__
+  issuer: eduplus
+  expDays: 1
+
+# lokalno port ako želiš:
+server:
+  port: 8080
