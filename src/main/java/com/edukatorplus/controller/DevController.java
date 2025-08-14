@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Profile("dev") // endpoint dostupan samo u dev okruženju
+@Profile("dev") // endpoint postoji samo u 'dev' profilu
 @RestController
-@RequestMapping("/api/dev")
+@RequestMapping(value = "/api/dev", produces = "application/json")
 public class DevController {
 
     private final DevDataSeeder seeder;
@@ -21,8 +21,8 @@ public class DevController {
     @PostMapping("/seed")
     public ResponseEntity<Map<String, String>> regenerateData() {
         try {
-            // pokreće generiranje novih podataka
-            seeder.run();
+            // generira nove random podatke i sprema u bazu (stare briše po tvojoj logici)
+            seeder.run(); // varargs metoda; poziv bez argumenata je OK
             return ResponseEntity.ok(Map.of(
                     "status", "success",
                     "message", "Podaci su uspješno regenerirani."
@@ -30,7 +30,7 @@ public class DevController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(Map.of(
                     "status", "error",
-                    "message", "Greška: " + e.getMessage()
+                    "message", "Greška pri regeneriranju podataka: " + e.getMessage()
             ));
         }
     }
