@@ -7,14 +7,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -23,40 +25,41 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-    // Ako je aktivan "dev" profil, dopuštamo /api/dev/** ADMIN-ima; inače ga blokiramo
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // CORS prema CorsConfig bean-u
-            .cors(Customizer.withDefaults())
-            // stateless JWT
+            .cors(withDefaults())
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // autorizacija
             .authorizeHttpRequests(auth -> {
-                // javno dostupni endpointi
+                // potpuno otvoreno za login/register/refresh…
+                auth.requestMatchers("/api/auth/**").permitAll();
+                auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+
+                // Swagger
                 auth.requestMatchers(
-                        "/api/auth/**",
-                        "/api/ping",
                         "/swagger-ui.html",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**"
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**"
                 ).permitAll();
 
-                // dev-seed endpointi
-                if ("dev".equalsIgnoreCase(activeProfile)) {
-                    auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
-                } else {
-                    auth.requestMatchers("/api/dev/**").denyAll();
-                }
+                // seed endpoint:
+                // a) samo u dev profilu
+                // if ("dev".equalsIgnoreCase(activeProfile)) {
+                //     auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
+                // } else {
+                //     auth.requestMatchers("/api/dev/**").denyAll();
+                // }
 
-                // sve ostalo traži autentikaciju
+                // b) ako želiš dopustiti ADMIN-u i u produkciji, koristi ovo:
+                auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
+
+                // sve ostalo traži login
                 auth.anyRequest().authenticated();
             })
-            // naš JWT filter ide prije UsernamePasswordAuthenticationFilter-a
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -64,12 +67,11 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // po potrebi promijeni strength (default 10)
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // default strength 10
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
-        return cfg.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }
