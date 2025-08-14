@@ -1,4 +1,4 @@
-// npr. com.edukatorplus.config.CorsConfig
+com.edukatorplus.config.CorsConfig
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
