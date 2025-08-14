@@ -1,6 +1,6 @@
 package com.edukatorplus.controller;
 
-import com.edukatorplus.seeder.DataSeeder;
+import com.edukatorplus.config.DevDataSeeder;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
