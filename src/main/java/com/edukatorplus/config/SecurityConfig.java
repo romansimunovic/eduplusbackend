@@ -27,58 +27,50 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
-    // Render: prod | Lokalno (dev branch): dev
+    // npr. dev | prod
     @Value("${spring.profiles.active:}")
     private String activeProfile;
+
+    // čita ili app.enableDevEndpoints (application*.yml) ili direktno env ENABLE_DEV_ENDPOINTS
+    @Value("${app.enableDevEndpoints:${ENABLE_DEV_ENDPOINTS:false}}")
+    private boolean enableDevEndpoints;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // CORS (ako imaš globalni CorsFilter, ovo je ok ostaviti)
             .cors(withDefaults())
-            // Stateless JWT -> bez CSRF-a i bez sessiona
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
             .authorizeHttpRequests(auth -> {
-                // Otvoreni endpointi (auth i health)
+                // public
                 auth.requestMatchers(
                         "/api/auth/**",
-                        "/api/ping"
-                ).permitAll();
-
-                // Preflight
-                auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-
-                // Swagger / OpenAPI
-                auth.requestMatchers(
+                        "/api/ping",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v3/api-docs/**"
                 ).permitAll();
 
-                // DEV seed/utility endpointi — samo u dev profilu dostupni ADMIN-u.
-                if ("dev".equalsIgnoreCase(activeProfile)) {
+                // preflight
+                auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+
+                // DEV util rute
+                if ("dev".equalsIgnoreCase(activeProfile) || enableDevEndpoints) {
                     auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
                 } else {
-                    // u produkciji ne izlagati uopće
                     auth.requestMatchers("/api/dev/**").denyAll();
                 }
 
-                // Sve ostalo traži autenticiran JWT
+                // ostalo -> treba JWT
                 auth.anyRequest().authenticated();
             })
-
-            // Uključi naš JWT filter prije UsernamePasswordAuthenticationFilter-a
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // strength 10
-    }
+    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
