@@ -3,12 +3,14 @@ package com.edukatorplus.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
 @Component
 public class JwtUtil {
@@ -17,15 +19,31 @@ public class JwtUtil {
     private final Duration expiration;
     private final Key key;
 
-    // Konfigurabilno preko env-a/properties:
-    // jwt.secret, jwt.issuer, jwt.expDays
     public JwtUtil(
-            @Value("${jwt.secret:tajna_lozinka_tajna_lozinka_tajna_lozinka_123}") String secret,
+            @Value("${jwt.secret:}") String secretFromProps,
             @Value("${jwt.issuer:eduplus}") String issuer,
-            @Value("${jwt.expDays:1}") long expDays
+            @Value("${jwt.expDays:1}") long expDays,
+            Environment env
     ) {
         this.issuer = issuer;
         this.expiration = Duration.ofDays(expDays);
+
+        // Ako je secret prazan ili prekratak, ponašaj se ovisno o profilu:
+        String active = env.getProperty("spring.profiles.active", "");
+        boolean isDev = "dev".equalsIgnoreCase(active);
+
+        String secret = (secretFromProps != null && !secretFromProps.isBlank())
+                ? secretFromProps
+                // fallback na dobar dev secret (>= 32 chars) ako ništa nije zadano
+                : (isDev ? "dev_super_secret_key_32bytes_min__ok__" : "");
+
+        if (secret.isBlank() || secret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            // U produkciji fail-fast s jasnom porukom
+            throw new IllegalStateException(
+                    "JWT secret is invalid (empty or < 32 bytes). Set property 'jwt.secret' to a strong value (>=32 chars)."
+            );
+        }
+
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -34,7 +52,7 @@ public class JwtUtil {
         Date exp = new Date(now.getTime() + expiration.toMillis());
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(Objects.requireNonNull(email, "email required"))
                 .claim("role", role)
                 .setIssuer(issuer)
                 .setIssuedAt(now)
@@ -47,15 +65,13 @@ public class JwtUtil {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .requireIssuer(issuer)
-                .setAllowedClockSkewSeconds(60) // 60s tolerancije
+                .setAllowedClockSkewSeconds(60)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    public String extractEmail(String token) {
-        return extractClaims(token).getSubject();
-    }
+    public String extractEmail(String token) { return extractClaims(token).getSubject(); }
 
     public String extractRole(String token) {
         Object role = extractClaims(token).get("role");
@@ -67,12 +83,10 @@ public class JwtUtil {
         try {
             extractClaims(token);
             return true;
-        } catch (JwtException ex) { // pokriva i ExpiredJwtException
+        } catch (JwtException ex) { // uključuje i ExpiredJwtException
             return false;
         }
     }
 
-    public long getExpirationMillis() {
-        return expiration.toMillis();
-    }
+    public long getExpirationMillis() { return expiration.toMillis(); }
 }
