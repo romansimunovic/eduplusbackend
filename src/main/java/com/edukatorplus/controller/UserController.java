@@ -1,8 +1,6 @@
 package com.edukatorplus.controller;
 
-import com.edukatorplus.model.User;
-import com.edukatorplus.repository.UserRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
+import com.edukatorplus.repository.AppUserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,15 +9,19 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserRepository userRepo;
+    private final AppUserRepository userRepo;
 
-    public UserController(UserRepository userRepo) {
+    public UserController(AppUserRepository userRepo) {
         this.userRepo = userRepo;
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public List<UserSummary> getAllUsers() {
+        return userRepo.findAll().stream()
+                .map(u -> new UserSummary(u.getId(), u.getEmail(), u.getRole()))
+                .toList();
     }
+
+    // mali DTO da ne vraćamo password
+    public record UserSummary(Long id, String email, String role) {}
 }
