@@ -5,7 +5,6 @@ import com.edukatorplus.repository.*;
 import net.datafaker.Faker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.boot.CommandLineRunner;
 
 import java.text.Normalizer;
 import java.time.LocalDate;
@@ -13,7 +12,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Component
-public class DevDataSeeder implements CommandLineRunner {
+public class DataSeeder {
 
     private final PolaznikRepository polaznikRepo;
     private final RadionicaRepository radionicaRepo;
@@ -56,7 +55,7 @@ public class DevDataSeeder implements CommandLineRunner {
         "Mirta","Tea","Jelena","Paula","Elena","Gabrijela","Antonija","Rebeka","Helena","Iva"
     );
 
-    public DevDataSeeder(
+    public DataSeeder(
             PolaznikRepository polaznikRepo,
             RadionicaRepository radionicaRepo,
             PrisustvoRepository prisustvoRepo,
@@ -70,9 +69,8 @@ public class DevDataSeeder implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public void run(String... args) {
-        // Čist start u DEV-u
+    /** OPREZ: destruktivno — briše i ponovno puni bazu */
+    public void reseedAllDestructive() {
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
@@ -83,23 +81,24 @@ public class DevDataSeeder implements CommandLineRunner {
     }
 
     private void seedAdminUser() {
-        // kreiraj admina
+        // ako koristiš hasRole("ADMIN"), onda u GrantedAuthorities treba biti "ROLE_ADMIN".
+        // Ovisno o tvojoj JWT logici, možda ovdje želiš spremiti "ADMIN", a prefiks "ROLE_"
+        // dodaješ pri mapiranju u UserDetails. Ako ne, stavi "ROLE_ADMIN".
         AppUser admin = new AppUser();
         admin.setEmail("admin@gmail.com");
         admin.setPassword(passwordEncoder.encode("pass"));
-        admin.setRole("ADMIN");
+        admin.setRole("ADMIN"); // ili "ROLE_ADMIN" ako tako očekuješ
         userRepo.save(admin);
 
-        // i jedan običan user
         AppUser user = new AppUser();
         user.setEmail("user@gmail.com");
         user.setPassword(passwordEncoder.encode("pass"));
-        user.setRole("USER");
+        user.setRole("USER"); // ili "ROLE_USER"
         userRepo.save(user);
     }
 
     private void seedDomainData() {
-        // 1) Radionice
+        // Radionice
         Set<String> kombinacije = new HashSet<>();
         while (kombinacije.size() < 12) {
             String tema = TEME.get(random.nextInt(TEME.size()));
@@ -116,7 +115,7 @@ public class DevDataSeeder implements CommandLineRunner {
         }).toList();
         radionice = radionicaRepo.saveAll(radionice);
 
-        // 2) Polaznici
+        // Polaznici
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 40; i++) {
             boolean zensko = random.nextBoolean();
@@ -143,7 +142,7 @@ public class DevDataSeeder implements CommandLineRunner {
         }
         polaznici = polaznikRepo.saveAll(polaznici);
 
-        // 3) Prisustva
+        // Prisustva
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
@@ -161,7 +160,7 @@ public class DevDataSeeder implements CommandLineRunner {
 
     private StatusPrisustva randomStatus() {
         StatusPrisustva[] all = StatusPrisustva.values();
-        return all[random.nextInt(all.length)];
+        return all[new Random().nextInt(all.length)];
     }
 
     private String removeDiacritics(String input) {
