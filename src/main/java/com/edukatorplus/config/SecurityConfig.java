@@ -1,7 +1,6 @@
 package com.edukatorplus.config;
 
 import com.edukatorplus.service.JwtFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,23 +21,27 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
 
+    public SecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
+    // Render: prod | Lokalno (dev branch): dev
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // CORS (ako imaš globalni CorsFilter, i ovo je ok)
+            // CORS (ako imaš globalni CorsFilter, ovo je ok ostaviti)
             .cors(withDefaults())
-            // stateless JWT -> bez CSRF-a i bez sessiona
+            // Stateless JWT -> bez CSRF-a i bez sessiona
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests(auth -> {
-                // Otvoreni endpointi (auth i health/ping)
+                // Otvoreni endpointi (auth i health)
                 auth.requestMatchers(
                         "/api/auth/**",
                         "/api/ping"
@@ -54,16 +57,13 @@ public class SecurityConfig {
                         "/v3/api-docs/**"
                 ).permitAll();
 
-                // DEV seed endpoint:
-                // Ako želiš strogo samo u dev profilu – otvori ADMIN-u, a u prod profilu zabrani:
-                // if ("dev".equalsIgnoreCase(activeProfile)) {
-                //     auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
-                // } else {
-                //     auth.requestMatchers("/api/dev/**").denyAll();
-                // }
-
-                // Ako želiš dopustiti ADMIN-u i u produkciji, koristi ovo:
-                auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
+                // DEV seed/utility endpointi — samo u dev profilu dostupni ADMIN-u.
+                if ("dev".equalsIgnoreCase(activeProfile)) {
+                    auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
+                } else {
+                    // u produkciji ne izlagati uopće
+                    auth.requestMatchers("/api/dev/**").denyAll();
+                }
 
                 // Sve ostalo traži autenticiran JWT
                 auth.anyRequest().authenticated();
@@ -77,8 +77,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // default strength = 10
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // strength 10
     }
 
     @Bean
