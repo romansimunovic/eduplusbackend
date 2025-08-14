@@ -4,6 +4,7 @@ import com.edukatorplus.model.*;
 import com.edukatorplus.repository.*;
 import net.datafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -13,23 +14,15 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Pattern;
 
+@Profile("dev") // ✅ Seeder radi samo kad je aktivan 'dev' profil
 @Component
 public class DataSeeder {
 
-    @Autowired
-    private PolaznikRepository polaznikRepo;
-
-    @Autowired
-    private RadionicaRepository radionicaRepo;
-
-    @Autowired
-    private PrisustvoRepository prisustvoRepo;
-
-    @Autowired
-    private AppUserRepository userRepo;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Autowired private PolaznikRepository polaznikRepo;
+    @Autowired private RadionicaRepository radionicaRepo;
+    @Autowired private PrisustvoRepository prisustvoRepo;
+    @Autowired private AppUserRepository userRepo;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     private final Faker faker = new Faker(new Locale("hr"));
     private final Random random = new Random();
@@ -54,13 +47,17 @@ public class DataSeeder {
             "u nevladinim organizacijama", "u knjižnicama", "putem online platformi", "na društvenim mrežama"
     );
 
-    private static final List<String> MUSKA_IMENA = List.of("Roman", "Sebastijan", "Marko", "Luka", "Ivan", "Petar", "Filip", "Karlo", "David", "Ante",
+    private static final List<String> MUSKA_IMENA = List.of(
+            "Roman", "Sebastijan", "Marko", "Luka", "Ivan", "Petar", "Filip", "Karlo", "David", "Ante",
             "Tomislav", "Stjepan", "Domagoj", "Fran", "Josip", "Lovro", "Leon", "Noa", "Nikola", "Borna",
-            "Matija", "Tin", "Matej", "Marin", "Kristijan", "Zvonimir", "Jakov", "Emanuel", "Hrvoje", "Viktor");
+            "Matija", "Tin", "Matej", "Marin", "Kristijan", "Zvonimir", "Jakov", "Emanuel", "Hrvoje", "Viktor"
+    );
 
-    private static final List<String> ZENSKA_IMENA = List.of("Romana", "Ines", "Ana", "Marija", "Lucija", "Maja", "Petra", "Martina", "Sara", "Lana",
+    private static final List<String> ZENSKA_IMENA = List.of(
+            "Romana", "Ines", "Ana", "Marija", "Lucija", "Maja", "Petra", "Martina", "Sara", "Lana",
             "Ivana", "Ema", "Lea", "Nina", "Katarina", "Dora", "Matea", "Laura", "Tena", "Andrea",
-            "Mirta", "Tea", "Jelena", "Paula", "Elena", "Gabrijela", "Antonija", "Rebeka", "Helena", "Iva");
+            "Mirta", "Tea", "Jelena", "Paula", "Elena", "Gabrijela", "Antonija", "Rebeka", "Helena", "Iva"
+    );
 
     @PostConstruct
     public void init() {
@@ -68,6 +65,7 @@ public class DataSeeder {
     }
 
     public void generateNewData() {
+        // Počni od čistog stanja u DEV-u
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
         radionicaRepo.deleteAllInBatch();
@@ -75,6 +73,7 @@ public class DataSeeder {
 
         seedAdminUser();
 
+        // 1) Radionice
         Set<String> kombinacije = new HashSet<>();
         while (kombinacije.size() < 12) {
             String tema = TEME.get(random.nextInt(TEME.size()));
@@ -91,6 +90,7 @@ public class DataSeeder {
         }).toList();
         radionice = radionicaRepo.saveAll(radionice);
 
+        // 2) Polaznici
         List<Polaznik> polaznici = new ArrayList<>();
         for (int i = 0; i < 40; i++) {
             boolean zensko = random.nextBoolean();
@@ -117,6 +117,7 @@ public class DataSeeder {
         }
         polaznici = polaznikRepo.saveAll(polaznici);
 
+        // 3) Prisustva
         List<Prisustvo> prisustva = new ArrayList<>();
         for (Radionica r : radionice) {
             for (Polaznik p : polaznici) {
@@ -133,11 +134,15 @@ public class DataSeeder {
     }
 
     private void seedAdminUser() {
-        AppUser user = new AppUser();
-        user.setEmail("admin@gmail.com");
-        user.setPassword(passwordEncoder.encode("pass"));
-        user.setRole("ADMIN");
-        userRepo.save(user);
+        // Ako si zadržao deleteAllInBatch gore, ovo je ionako prvi insert.
+        // Svejedno provjerimo postoji li email — čisto za sigurnost.
+        if (userRepo.findByEmail("admin@gmail.com").isEmpty()) {
+            AppUser user = new AppUser();
+            user.setEmail("admin@gmail.com");
+            user.setPassword(passwordEncoder.encode("pass"));
+            user.setRole("ADMIN");
+            userRepo.save(user);
+        }
     }
 
     private StatusPrisustva randomStatus() {
@@ -146,8 +151,11 @@ public class DataSeeder {
 
     private String removeDiacritics(String input) {
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
-        return Pattern.compile("\\p{InCombiningDiacriticalMarks}+").matcher(normalized).replaceAll("")
-                .replace("đ", "d").replace("Đ", "D");
+        return Pattern.compile("\\p{InCombiningDiacriticalMarks}+")
+                .matcher(normalized)
+                .replaceAll("")
+                .replace("đ", "d")
+                .replace("Đ", "D");
     }
 
     private String capitalize(String s) {
