@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,38 +23,50 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-    // Render: prod | Lokalno (dev branch): dev
+    // npr. "dev" lokalno / dev grana; na Renderu ostavi prazno ili "prod"
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // JWT -> nema CSRF-a ni stateful sesija
-            .csrf(AbstractHttpConfigurer::disable)
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // stateless JWT
+            .csrf().disable()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
 
-            .authorizeHttpRequests(auth -> {
-                // javni endpointi
-                auth.requestMatchers(
+            // ⚠️ koristimo authorizeRequests + antMatchers (kompatibilno s Spring Security 5.7)
+            .authorizeRequests(auth -> {
+                // javno: auth + swagger
+                auth.antMatchers(
                         "/api/auth/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**",
                         "/swagger-ui/**"
                 ).permitAll();
 
-                // /api/dev/** -> samo u dev profilu i to ROLE_ADMIN
+                // DEV alati
                 if ("dev".equalsIgnoreCase(activeProfile)) {
-                    auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
+                    // u dev profilu dozvoli, ali samo ADMIN-u
+                    auth.antMatchers("/api/dev/**").hasRole("ADMIN");
                 } else {
-                    auth.requestMatchers("/api/dev/**").denyAll();
+                    // u produkciji (main/prod) — zabrani
+                    auth.antMatchers("/api/dev/**").denyAll();
                 }
 
-                // sve ostalo traži login
+                // MAIN/PROD: dopusti JAVNE GET-ove da stranice rade bez logina
+                if (!"dev".equalsIgnoreCase(activeProfile)) {
+                    auth.antMatchers(HttpMethod.GET, "/api/radionice/**").permitAll();
+                    auth.antMatchers(HttpMethod.GET, "/api/polaznici/**").permitAll();
+                    // koristi '/api/prisustva' ili '/api/prisustva/view' ovisno o tvom kontroleru
+                    auth.antMatchers(HttpMethod.GET, "/api/prisustva/**").permitAll();
+                }
+
+                // sve ostalo traži token
                 auth.anyRequest().authenticated();
             })
 
-            // JWT filter ide prije UsernamePasswordAuthenticationFilter-a
+            // JWT filter prije standardnog auth filtera
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -62,12 +74,12 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // korigiraj strength po potrebi (default 10)
+        // po potrebi promijeni "strength" (default 10)
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
+        return cfg.getAuthenticationManager();
     }
 }
