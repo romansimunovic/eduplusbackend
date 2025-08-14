@@ -1,71 +1,62 @@
-package com.edukatorplus.service;
+package com.edukatorplus.security;
 
-import com.edukatorplus.security.JwtUtil;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.time.Duration;
+import java.util.Date;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtUtil {
 
-    private final JwtUtil jwtUtil;
+    private static final String SECRET = "tajna_lozinka_tajna_lozinka_tajna_lozinka_123";
+    private static final String ISSUER = "eduplus";
+    private static final Duration EXPIRATION = Duration.ofDays(1);
 
-    public JwtFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+
+    public String generateToken(String email, String role) {
+        Date now = new Date();
+        Date exp = new Date(now.getTime() + EXPIRATION.toMillis());
+
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("role", role)
+                .setIssuer(ISSUER)
+                .setIssuedAt(now)
+                .setExpiration(exp)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    @Override
-    protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
-    ) throws ServletException, IOException {
-
-        // Preskoči auth rute i preflight
-        String path = request.getRequestURI();
-        if (path.startsWith("/api/auth/") || "OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String token = authHeader.substring(7);
-        if (!jwtUtil.isTokenValid(token)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        Claims claims = jwtUtil.extractClaims(token);
-        String email = claims.getSubject();
-        String role = claims.get("role", String.class);
-
-        // mapiraj na ROLE_*
-        var authorities = role == null
-                ? List.<SimpleGrantedAuthority>of()
-                : List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-        // userDetails može biti null ako ne trebaš dodatni load iz baze
-        var authentication = new UsernamePasswordAuthenticationToken(
-                email, null, authorities
-        );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(request, response);
+    public Claims extractClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .requireIssuer(ISSUER)
+                .setAllowedClockSkewSeconds(60)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
+
+    public String extractEmail(String token) { return extractClaims(token).getSubject(); }
+
+    public String extractRole(String token) {
+        Object role = extractClaims(token).get("role");
+        return role != null ? role.toString() : null;
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            extractClaims(token);
+            return true;
+        } catch (ExpiredJwtException | JwtException ex) {
+            return false;
+        }
+    }
+
+    public long getExpirationMillis() { return EXPIRATION.toMillis(); }
 }
