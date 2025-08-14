@@ -3,31 +3,28 @@ package com.edukatorplus.controller;
 import com.edukatorplus.model.AuthRequest;
 import com.edukatorplus.model.AuthResponse;
 import com.edukatorplus.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin // možeš ukloniti ako imaš globalni CorsFilter
+@CrossOrigin // makni ako imaš globalni CORS
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    /**
-     * Jednostavan health-check za frontend (ne vraća nužno JSON).
-     */
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
+    /** Health-check za frontend */
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {
         return ResponseEntity.ok("pong");
     }
 
-    /**
-     * Prijava – vraća JWT i rolu u tijelu.
-     * 200 OK na uspjeh, 401 na krive kredencijale.
-     */
+    /** Login: prima email+password; vraća token + rolu */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
@@ -41,16 +38,15 @@ public class AuthController {
     }
 
     /**
-     * Registracija korisnika.
-     * Rola se zadaje kao query param (?role=ADMIN). Ako nije zadano, default je USER.
-     * 201 Created na uspjeh.
+     * Registracija: rola dolazi iz query parametra (?role=ADMIN|USER); default USER.
+     * Body je samo email+password (AuthRequest).
      */
     @PostMapping("/register")
     public ResponseEntity<?> register(
-            @RequestParam(value = "role", required = false, defaultValue = "USER") String roleFromQuery,
+            @RequestParam(value = "role", required = false, defaultValue = "USER") String role,
             @RequestBody AuthRequest request) {
         try {
-            authService.register(request, roleFromQuery.toUpperCase());
+            authService.register(request, role.toUpperCase());
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
@@ -59,10 +55,7 @@ public class AuthController {
         }
     }
 
-    /**
-     * Eksplicitna ruta za kreiranje ADMIN korisnika (korisno u dev-u).
-     * Ako ne želiš je izlagati u produkciji, zabranjuj u SecurityConfigu.
-     */
+    /** Brza ruta za izradu ADMIN-a (zaključaj u SecurityConfigu za prod) */
     @PostMapping("/register-admin")
     public ResponseEntity<?> registerAdmin(@RequestBody AuthRequest request) {
         try {
