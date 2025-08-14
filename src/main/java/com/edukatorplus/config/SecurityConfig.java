@@ -31,7 +31,7 @@ public class SecurityConfig {
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
-    // čita ili app.enableDevEndpoints (application*.yml) ili direktno env ENABLE_DEV_ENDPOINTS
+    // čita app.enableDevEndpoints ili direktno env ENABLE_DEV_ENDPOINTS
     @Value("${app.enableDevEndpoints:${ENABLE_DEV_ENDPOINTS:false}}")
     private boolean enableDevEndpoints;
 
@@ -42,7 +42,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
-                // public
+                // public rute
                 auth.requestMatchers(
                         "/api/auth/**",
                         "/api/ping",
@@ -55,13 +55,15 @@ public class SecurityConfig {
                 auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
                 // DEV util rute
-                if ("dev".equalsIgnoreCase(activeProfile) || enableDevEndpoints) {
+                boolean devMode = "dev".equalsIgnoreCase(activeProfile);
+                if (devMode || enableDevEndpoints) {
+                    // samo ADMIN smije
                     auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
                 } else {
                     auth.requestMatchers("/api/dev/**").denyAll();
                 }
 
-                // ostalo -> treba JWT
+                // sve ostalo treba valjan JWT
                 auth.anyRequest().authenticated();
             })
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
