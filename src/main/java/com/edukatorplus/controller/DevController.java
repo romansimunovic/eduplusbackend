@@ -7,23 +7,31 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Profile("dev") // Dostupno samo kad je aktivan 'dev' profil
+@Profile("dev") // radi samo u dev profilu
 @RestController
 @RequestMapping("/api/dev")
 public class DevController {
 
-    private final DataSeeder dataSeeder;
+    private final DevDataSeeder seeder;
 
-    public DevController(DataSeeder dataSeeder) {
-        this.dataSeeder = dataSeeder;
+    public DevController(DevDataSeeder seeder) {
+        this.seeder = seeder;
     }
 
     @PostMapping("/seed")
     public ResponseEntity<Map<String, String>> regenerateData() {
-        dataSeeder.generateNewData();
-        return ResponseEntity.ok(Map.of(
-                "status", "success",
-                "message", "Podaci su ponovno generirani."
-        ));
+        try {
+            // CommandLineRunner metoda; poziv bez argumenata je ok (varargs)
+            seeder.run();
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Podaci su ponovno generirani."
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of(
+                    "status", "error",
+                    "message", "Greška pri regeneriranju podataka: " + e.getMessage()
+            ));
+        }
     }
 }
