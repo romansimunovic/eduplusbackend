@@ -1,6 +1,7 @@
 package com.edukatorplus.config;
 
 import com.edukatorplus.service.JwtFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,6 +27,14 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
+    // npr. "dev" ili "prod"
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
+
+    // može doći iz application*.yml (app.enableDevEndpoints) ili direktno iz env var ENABLE_DEV_ENDPOINTS
+    @Value("${app.enableDevEndpoints:${ENABLE_DEV_ENDPOINTS:false}}")
+    private boolean enableDevEndpoints;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -33,7 +42,6 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> {
-                // Public rute
                 auth.requestMatchers(
                         "/api/auth/**",
                         "/api/ping",
@@ -42,10 +50,16 @@ public class SecurityConfig {
                         "/v3/api-docs/**"
                 ).permitAll();
 
-                // Preflight
                 auth.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 
-                // Sve ostalo traži valjan JWT
+                boolean devMode = "dev".equalsIgnoreCase(activeProfile) || enableDevEndpoints;
+                if (devMode) {
+                    // samo ADMIN smije na /api/dev/**
+                    auth.requestMatchers("/api/dev/**").hasRole("ADMIN");
+                } else {
+                    auth.requestMatchers("/api/dev/**").denyAll();
+                }
+
                 auth.anyRequest().authenticated();
             })
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -54,9 +68,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
