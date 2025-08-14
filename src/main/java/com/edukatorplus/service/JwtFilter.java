@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,6 +19,8 @@ import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
+    private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtUtil jwtUtil;
 
@@ -32,34 +35,59 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String path = request.getRequestURI();
-        if (path.startsWith("/api/auth/") || "OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        final String path = request.getRequestURI();
+
+        // Public/whitelist rute i preflight
+        if (isWhitelisted(request, path)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // Ako je već autentificiran, preskoči (izbjegni dupli rad)
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
+        final String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        final String token = authHeader.substring(BEARER_PREFIX.length()).trim();
         if (!jwtUtil.isTokenValid(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        Claims claims = jwtUtil.extractClaims(token);
-        String email = claims.getSubject();
-        String role = claims.get("role", String.class);
+        try {
+            Claims claims = jwtUtil.extractClaims(token);
+            String email = claims.getSubject();
+            String role = claims.get("role", String.class);
 
-        var authorities = role == null
-                ? List.<SimpleGrantedAuthority>of()
-                : List.of(new SimpleGrantedAuthority("ROLE_" + role));
+            var authorities = (role == null || role.isBlank())
+                    ? List.<SimpleGrantedAuthority>of()
+                    : List.of(new SimpleGrantedAuthority("ROLE_" + role.trim().toUpperCase()));
 
-        var authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            var authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception ex) {
+            // Ako se bilo što dogodi pri parsiranju, nemoj rušiti request — samo očisti kontekst
+            SecurityContextHolder.clearContext();
+        }
+
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isWhitelisted(HttpServletRequest req, String path) {
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) return true;
+        if (path.startsWith("/api/auth/")) return true;
+        if ("/api/ping".equals(path)) return true;
+        if (path.startsWith("/swagger-ui") || path.equals("/swagger-ui.html")) return true;
+        if (path.startsWith("/v3/api-docs")) return true;
+        return false;
     }
 }
