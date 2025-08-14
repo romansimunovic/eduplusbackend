@@ -1,71 +1,71 @@
-package com.edukatorplus.security;
+package com.edukatorplus.service;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+import com.edukatorplus.security.JwtUtil;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.time.Duration;
-import java.util.Date;
+import java.io.IOException;
+import java.util.List;
 
 @Component
-public class JwtUtil {
+public class JwtFilter extends OncePerRequestFilter {
 
-    // 🔒 Hardkodano za dev/test (za prod kasnije prebaci u env)
-    private static final String SECRET = "tajna_lozinka_tajna_lozinka_tajna_lozinka_123";
-    private static final String ISSUER = "eduplus"; // bilo što stabilno za tvoj servis
-    private static final Duration EXPIRATION = Duration.ofDays(1); // 1 dan
+    private final JwtUtil jwtUtil;
 
-    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
-
-    public String generateToken(String email, String role) {
-        Date now = new Date();
-        Date exp = new Date(now.getTime() + EXPIRATION.toMillis());
-
-        return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role)
-                .setIssuer(ISSUER)
-                .setIssuedAt(now)
-                .setExpiration(exp)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+    public JwtFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
 
-    public Claims extractClaims(String token) {
-        // dopuštamo 60s clock skew da satovi ne polude
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .requireIssuer(ISSUER)
-                .setAllowedClockSkewSeconds(60)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
 
-    public String extractEmail(String token) {
-        return extractClaims(token).getSubject();
-    }
-
-    public String extractRole(String token) {
-        Object role = extractClaims(token).get("role");
-        return role != null ? role.toString() : null;
-    }
-
-    public boolean isTokenValid(String token) {
-        try {
-            extractClaims(token); // ako ne baci, token je valjan
-            return true;
-        } catch (ExpiredJwtException ex) {
-            // ako ti treba razlikovanje "istekao" vs "neispravan", ovdje možeš vratiti false ili baciti custom
-            return false;
-        } catch (JwtException ex) {
-            return false;
+        // Preskoči auth rute i preflight
+        String path = request.getRequestURI();
+        if (path.startsWith("/api/auth/") || "OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
         }
-    }
 
-    public long getExpirationMillis() {
-        return EXPIRATION.toMillis();
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = authHeader.substring(7);
+        if (!jwtUtil.isTokenValid(token)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        Claims claims = jwtUtil.extractClaims(token);
+        String email = claims.getSubject();
+        String role = claims.get("role", String.class);
+
+        // mapiraj na ROLE_*
+        var authorities = role == null
+                ? List.<SimpleGrantedAuthority>of()
+                : List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+        // userDetails može biti null ako ne trebaš dodatni load iz baze
+        var authentication = new UsernamePasswordAuthenticationToken(
+                email, null, authorities
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        filterChain.doFilter(request, response);
     }
 }
