@@ -1,6 +1,6 @@
 package com.edukatorplus.controller;
 
-import com.edukatorplus.config.DataSeeder;
+import com.edukatorplus.config.DevDataSeeder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
