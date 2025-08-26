@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin // makni ako imaš globalni CORS
+@CrossOrigin 
 public class AuthController {
 
     private final AuthService authService;
@@ -24,7 +24,7 @@ public class AuthController {
         return ResponseEntity.ok("pong");
     }
 
-    /** Login: prima email+password; vraća token + rolu */
+    /** login - prima email+password; vraća token + rolu */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
@@ -38,7 +38,7 @@ public class AuthController {
     }
 
     /**
-     * Registracija: rola dolazi iz query parametra (?role=ADMIN|USER); default USER.
+     * Registracija - role dolazi iz query parametra (?role=ADMIN|USER); default USER.
      * Body je samo email+password (AuthRequest).
      */
     @PostMapping("/register")
@@ -55,7 +55,7 @@ public class AuthController {
         }
     }
 
-    /** Brza ruta za izradu ADMIN-a (zaključaj u SecurityConfigu za prod) */
+    /**  ruta za izradu ADMIN-a */
     @PostMapping("/register-admin")
     public ResponseEntity<?> registerAdmin(@RequestBody AuthRequest request) {
         try {

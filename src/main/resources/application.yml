@@ -14,7 +14,6 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-# Ako lokalno želiš 8080 kad ne koristiš Docker
 server:
   port: 8080
 

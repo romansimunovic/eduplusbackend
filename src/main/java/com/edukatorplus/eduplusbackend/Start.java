@@ -18,7 +18,7 @@ public class Start {
         SpringApplication.run(Start.class, args);
     }
 
-    // Registracija modula za rad s datumima (LocalDate, itd.)
+    // registracija modula za rad s datumima (LocalDate i ostali)
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();

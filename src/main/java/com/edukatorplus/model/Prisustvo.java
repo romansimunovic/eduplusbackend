@@ -20,8 +20,6 @@ public class Prisustvo {
     @JoinColumn(name = "radionica_id")
     private Radionica radionica;
 
-    // Getteri i setteri
-
     public Long getId() {
         return id;
     }

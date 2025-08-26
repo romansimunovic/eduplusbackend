@@ -55,7 +55,7 @@ public class DevDataSeeder {
         "Mirta","Tea","Jelena","Paula","Elena","Gabrijela","Antonija","Rebeka","Helena","Iva"
     );
 
-    // ↓↓↓ OVO JE BILO KRIVO: DataSeeder(...) → treba DevDataSeeder(...)
+    
     public DevDataSeeder(
             PolaznikRepository polaznikRepo,
             RadionicaRepository radionicaRepo,

@@ -34,11 +34,9 @@ public class JwtUtil {
 
         String secret = (secretFromProps != null && !secretFromProps.isBlank())
                 ? secretFromProps
-                // fallback na dobar dev secret (>= 32 chars) ako ništa nije zadano
                 : (isDev ? "dev_super_secret_key_32bytes_min__ok__" : "");
 
         if (secret.isBlank() || secret.getBytes(StandardCharsets.UTF_8).length < 32) {
-            // U produkciji fail-fast s jasnom porukom
             throw new IllegalStateException(
                     "JWT secret is invalid (empty or < 32 bytes). Set property 'jwt.secret' to a strong value (>=32 chars)."
             );
@@ -83,7 +81,7 @@ public class JwtUtil {
         try {
             extractClaims(token);
             return true;
-        } catch (JwtException ex) { // uključuje i ExpiredJwtException
+        } catch (JwtException ex) {
             return false;
         }
     }

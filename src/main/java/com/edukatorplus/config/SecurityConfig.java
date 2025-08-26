@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Value("${spring.profiles.active:}")
     private String activeProfile;
 
-    // može doći iz application*.yml (app.enableDevEndpoints) ili iz env var ENABLE_DEV_ENDPOINTS
+
     @Value("${app.enableDevEndpoints:${ENABLE_DEV_ENDPOINTS:false}}")
     private boolean enableDevEndpoints;
 
@@ -59,7 +59,6 @@ public class SecurityConfig {
                 // Admin tools (radi i u produkciji)
                 auth.requestMatchers("/api/admin/**").hasRole("ADMIN");
 
-                // Dev endpointi samo kad je dev profil ili ručno enable-an flag
                 boolean devMode = "dev".equalsIgnoreCase(activeProfile) || enableDevEndpoints;
                 if (devMode) {
                     auth.requestMatchers("/api/dev/**").hasRole("ADMIN");

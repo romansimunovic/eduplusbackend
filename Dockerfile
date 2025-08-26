@@ -8,7 +8,6 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
-# (opcija) brži start: dodaj JVM flags — prilagodi po želji
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75"
 
 COPY --from=builder /app/target/*.jar app.jar

@@ -13,10 +13,10 @@ public class Polaznik {
     private String prezime;
     private String email;
     private Integer godinaRodenja;
-    private String spol;      // npr. "muško" ili "žensko"
+    private String spol;      // "muško" ili "žensko"
     private String telefon;
     private String grad;
-    private String status;    // npr. "student", "zaposlen", "učenik", itd.
+    private String status;    // "student", "zaposlen", "učenik", itd.
 
     public Polaznik() {
     }

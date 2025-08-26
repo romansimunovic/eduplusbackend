@@ -40,7 +40,7 @@ public class AuthService {
         final String role = normalizeRole(user.getRole());
         final String token = jwtUtil.generateToken(user.getEmail(), role);
 
-        // Vrati i token i rolu (frontend to očekuje)
+        // vrati i token i role (frontend očekuje)
         return new AuthResponse(token, role);
     }
 
