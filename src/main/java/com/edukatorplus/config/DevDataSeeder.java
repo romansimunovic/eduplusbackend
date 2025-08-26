@@ -70,7 +70,7 @@ public class DevDataSeeder {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /** OPREZ: destruktivno — briše i ponovno puni bazu */
+    /** briše i ponovno puni bazu */
     public void reseedAllDestructive() {
         prisustvoRepo.deleteAllInBatch();
         polaznikRepo.deleteAllInBatch();
@@ -85,7 +85,7 @@ public class DevDataSeeder {
         AppUser admin = new AppUser();
         admin.setEmail("admin@gmail.com");
         admin.setPassword(passwordEncoder.encode("pass"));
-        admin.setRole("ADMIN"); // ili "ROLE_ADMIN" ovisno o tvojoj Security konfiguraciji
+        admin.setRole("ADMIN"); 
         userRepo.save(admin);
 
         AppUser user = new AppUser();

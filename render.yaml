@@ -10,5 +10,4 @@ services:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: JWT_SECRET
-        # zamijeni jakom lozinkom (≥32 znaka); možeš postaviti i u Render dashboardu
         value: change_me_to_a_very_long_secret_at_least_32_chars

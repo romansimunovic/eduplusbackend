@@ -6,8 +6,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update   # prod: NIKAD create-drop
+      ddl-auto: update   
     show-sql: true
 
 jwt:
-  secret: ${JWT_SECRET}   # postavi u Render env
+  secret: ${JWT_SECRET}   

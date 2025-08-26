@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create   # dev: svaki put svježe + naš seeder popuni
+      ddl-auto: create   
     show-sql: true
 
 jwt:
