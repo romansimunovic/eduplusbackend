@@ -1,68 +1,11 @@
-# EdukatorPlus Backend
+**EdukatorPlus – Backend**
 
-**EdukatorPlus** je RESTful backend sustav razvijen u okviru kolegija **Informacijsko-komunikacijska infrastruktura** na Odsjeku za informacijske znanosti u sklopu diplomskog studija Informacijske tehnologije na  Filozofskom fakultetu u Osijeku. Projekt je mentorirao **izv. prof. dr. sc. Tomislav Jakopec**.
+Ovo je backend dio aplikacije EdukatorPlus, izrađen u Spring Bootu. Njegova uloga je pružiti REST API za radionice, polaznike i njihovo prisustvo, tako da frontend uvijek radi s aktualnim podacima.
 
-Backend aplikacija implementirana je u Java Spring Boot frameworku te koristi Maven za upravljanje projektom. U aplikaciji su primijenjena znanja stečena i kroz kolegij **Programiranje 2 (P2)** s naglaskom na objektno orijentirano programiranje u Javi.
+Backend omogućuje dodavanje, uređivanje i brisanje zapisa, praćenje statusa prisustva te automatsko generiranje demo podataka. Povezan je s PostgreSQL bazom i hostan na Renderu, gdje komunicira direktno s frontend aplikacijom.
 
-## \:sparkles: Funkcionalnosti
+Projekt je razvijen u Javi (Spring Boot + JPA/Hibernate), uz Maven i PostgreSQL. 
 
-* CRUD operacije za entitete: `Polaznik`, `Radionica`, `Prisustvo`
-* Validacija i obrada grešaka
-* Enum za status prisustva (`PRISUTAN`, `IZOSTAO`, `ODUSTAO`)
-* DTO pattern za odvajanje slojeva aplikacije
-* Statistički prikaz prisustva po radionici
-* Odvojeni slojevi: `service`, `controller`, `repository`, `model`, `dto`
-* REST API (Spring Web)
+Pokreće se jednostavno – nakon kloniranja repozitorija dovoljno je ./mvnw spring-boot:run, a API je dostupan na http://localhost:8080.
 
-## \:gear: Tehnologije
-
-* Java 17
-* Spring Boot
-* Spring Web
-* Spring Data JPA
-* H2 / PostgreSQL (ovisno o konfiguraciji)
-* Maven
-
-## \:hammer\_and\_wrench: Pokretanje projekta
-
-```bash
-mvn spring-boot:run
-```
-
-Backend se prema zadanim postavkama pokreće na:
-
-```
-http://localhost:8080
-```
-
-## \:earth\_africa: Deploy
-
-Backend Render URL:
-
-```
-https://eduplusbackend.onrender.com
-```
-
-## \:file\_folder: Struktura projekta
-
-```
-src/main/java/com/edukatorplus/
-├── controller/
-├── service/
-├── repository/
-├── model/
-└── dto/
-```
-
-## \:link: API Primjeri ruta
-
-* `GET /api/polaznici`
-* `POST /api/radionice`
-* `GET /api/prisustva/view`
-* `DELETE /api/prisustva/{id}`
-
-## \:mortar\_board: Akademski kontekst
-
-Ova aplikacija je izrađena kao završni projekt u sklopu kolegija **Informacijsko-komunikacijska infrastruktura** uz podršku umjetne inteligencije (ChatGPT Plus) pod mentorstvom **izv. prof. dr. sc. Tomislava Jakopeca**.
-
----
+_Ovo je dio završnog rada iz kolegija Informacijsko-komunikacijska infrastruktura pod mentorstvom izv. prof. dr. sc. Tomislava Jakopeca. U dokumentaciji i kodu korišten je i ChatGPT Plus kao podrška._
