@@ -1,6 +1,6 @@
 **EdukatorPlus – Backend**
 
-Ovo je backend dio aplikacije EdukatorPlus, izrađen u Spring Bootu. Njegova uloga je pružiti REST API za radionice, polaznike i njihovo prisustvo, tako da frontend uvijek radi s aktualnim podacima.
+Ovo je repozitorij za backend dio aplikacije EdukatorPlus, izrađen u Spring Bootu. Njegova uloga je pružiti REST API za radionice, polaznike i njihovo prisustvo, tako da frontend uvijek radi s aktualnim podacima.
 
 Backend omogućuje dodavanje, uređivanje i brisanje zapisa, praćenje statusa prisustva te automatsko generiranje demo podataka. Povezan je s PostgreSQL bazom i hostan na Renderu, gdje komunicira direktno s frontend aplikacijom.
 
