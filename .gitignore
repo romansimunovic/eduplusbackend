@@ -1,4 +1,4 @@
-# ✨ Java i Spring Boot
+# ✨ Java & Spring Boot
 *.class
 *.jar
 *.war
@@ -8,14 +8,14 @@
 /target/
 /out/
 
-# Logovi
+# Log files
 *.log
 
-# OS-specifično
+# OS-specific
 .DS_Store
 Thumbs.db
 
-# IDE konfiguracije
+# IDE-specific
 /.idea/
 /*.iml
 /.vscode/
@@ -23,15 +23,13 @@ Thumbs.db
 /*.ntvs*
 /*.njsproj
 /*.sln
+*.run/
 
-# Maven specifično
+# Maven-specific
 /.mvn/
-/mvnw*
+mvnw*
 !mvnw
 !mvnw.cmd
-
-# IntelliJ run configs
-*.run/
 
 # NetBeans
 nbproject/private/
@@ -41,28 +39,37 @@ nbproject/private/
 /nbdist/
 /.nb-gradle/
 
-# Konfiguracijski fajlovi i env podatci
-/.env
+# 🔒 Configuration & Environment files (keep secrets out)
+.env
 .env.*
 application.properties
 application.yml
+application-*.yml
 
-# SQL inicijalizacija (ako koristiš lokalno)
+# SQL initialization (local only)
 /src/main/resources/data.sql
 /src/main/resources/schema.sql
 
-# IDE backup & temp fajlovi
+# Editor & temp files
 *.tmp
 *.bak
 *.swp
 *.orig
+*.rej
 
-# Build skripte
-gradle-app.setting
+# Build tools
 .gradle/
 build/
+gradle-app.setting
 
-# Docker, konfiguracije, certifikati
+# Docker & deployment
 docker-compose.*
 Dockerfile
 *.pem
+*.crt
+*.key
+
+# Frontend build (ako je frontend u istom repo)
+node_modules/
+build/
+dist/
