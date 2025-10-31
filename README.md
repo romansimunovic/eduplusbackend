@@ -20,6 +20,8 @@ Backend je implementiran u **Spring Bootu** te omogućuje osnovne API pozive za:
 
 ---
 
+Tehnologije: Java 17, Spring Boot, Maven
+
 ## Pokretanje
 
 ```bash
