@@ -1,10 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://ep-sparkling-poetry-agddtkne-pooler.c-2.eu-central-1.aws.neon.tech:5432/neondb?sslmode=require&channel_binding=require
+    url: jdbc:postgresql://ep-sparkling-poetry-agddtkne-pooler.c-2.eu-central-1.aws.neon.tech:5432/neondb?sslmode=require
     username: neondb_owner
     password: npg_JR7VW4QjtDLk
     driver-class-name: org.postgresql.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
