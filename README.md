@@ -1,11 +1,26 @@
-**EdukatorPlus – Backend**
+# EduPlus Backend
 
-Ovo je repozitorij za backend dio aplikacije EdukatorPlus, izrađen u Spring Bootu. Njegova uloga je pružiti REST API za radionice, polaznike i njihovo prisustvo, tako da frontend uvijek radi s aktualnim podacima.
+Ovo je repozitorij za backend dio aplikacije **EduPlus**, izrađen u sklopu kolegija  
+**Informacijsko-komunikacijska infrastruktura** pod mentorstvom **izv. prof. dr. sc. Tomislava Jakopeca**.
 
-Backend omogućuje dodavanje, uređivanje i brisanje zapisa, praćenje statusa prisustva te automatsko generiranje demo podataka. Povezan je s PostgreSQL bazom i hostan na Renderu, gdje komunicira direktno s frontend aplikacijom.
+Projekt prikazuje osnovni model sustava za evidenciju polaznika, radionica i prisustava.  
+Aplikacija je pojednostavljena i trenutno koristi **mockirane (statičke) podatke** bez aktivne baze.  
+U dokumentaciji i kodu korišten je i **ChatGPT Plus** kao podrška u razvoju i optimizaciji.
 
-Projekt je razvijen u Javi (Spring Boot + JPA/Hibernate), uz Maven i PostgreSQL. 
+---
 
-Pokreće se jednostavno – nakon kloniranja repozitorija dovoljno je ./mvnw spring-boot:run, a API je dostupan na http://localhost:8080.
+## Opis
 
-_Ovo je dio završnog rada iz kolegija Informacijsko-komunikacijska infrastruktura pod mentorstvom izv. prof. dr. sc. Tomislava Jakopeca. U dokumentaciji i kodu korišten je i ChatGPT Plus kao podrška._
+EduPlus je zamišljen kao sustav za jednostavno praćenje i administraciju edukativnih radionica.  
+Backend je implementiran u **Spring Bootu** te omogućuje osnovne API pozive za:
+- popis radionica  
+- popis polaznika  
+- evidenciju prisustava  
+- testnu provjeru dostupnosti (ping endpoint)
+
+---
+
+## Pokretanje
+
+```bash
+mvn spring-boot:run
