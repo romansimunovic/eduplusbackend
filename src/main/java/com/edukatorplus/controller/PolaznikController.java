@@ -1,45 +1,17 @@
 package com.edukatorplus.controller;
 
-import com.edukatorplus.dto.PolaznikDTO;
-import com.edukatorplus.service.PolaznikService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/polaznici")
-@Tag(name = "Polaznik", description = "API za upravljanje polaznicima")
 public class PolaznikController {
 
-    @Autowired
-    private PolaznikService polaznikService;
-
     @GetMapping
-    public List<PolaznikDTO> getAll() {
-        return polaznikService.getAll();
-    }
-
-    @GetMapping("/{id}")
-    public PolaznikDTO getById(@PathVariable Long id) {
-        return polaznikService.getById(id);
-    }
-
-    @PostMapping
-    public PolaznikDTO create(@RequestBody PolaznikDTO dto) {
-        return polaznikService.create(dto);
-    }
-
-    @PutMapping("/{id}")
-    public PolaznikDTO update(@PathVariable Long id, @RequestBody PolaznikDTO dto) {
-        return polaznikService.update(id, dto);
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        polaznikService.delete(id);
+    public List<Map<String, Object>> getPolaznici() {
+        return List.of(
+            Map.of("id", 1, "ime", "Ana", "prezime", "Marić", "email", "ana.maric@gmail.com", "spol", "Ž", "grad", "Osijek", "status", "student", "telefon", "091234567", "godinaRodenja", 2001),
+            Map.of("id", 2, "ime", "Marko", "prezime", "Ivić", "email", "marko.ivic@gmail.com", "spol", "M", "grad", "Zagreb", "status", "zaposlen", "telefon", "092345678", "godinaRodenja", 1998)
+        );
     }
 }
