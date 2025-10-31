@@ -24,5 +24,4 @@ Tehnologije: Java 17, Spring Boot, Maven
 
 ## Pokretanje
 
-```bash
-mvn spring-boot:run
+```bash mvn spring-boot:run - a backend se pokreće na adresi http://localhost:8080.
