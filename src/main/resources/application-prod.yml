@@ -1,13 +1,8 @@
-spring:
-  datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update   
-    show-sql: true
+spring.datasource.url=jdbc:postgresql://ep-sparkling-poetry-agddtkne-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require
+spring.datasource.username=neondb_owner
+spring.datasource.password=npg_JR7VW4QjtDLk
+spring.datasource.driver-class-name=org.postgresql.Driver
 
-jwt:
-  secret: ${JWT_SECRET}   
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
