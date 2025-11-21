@@ -1,18 +1,22 @@
 package com.edukatorplus.controller;
 
+import com.edukatorplus.model.Radionica;
+import com.edukatorplus.service.RadionicaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/radionice")
 public class RadionicaController {
+    @Autowired private RadionicaService service;
 
-    @GetMapping
-    public List<Map<String, Object>> getRadionice() {
-        return List.of(
-            Map.of("id", 1, "naziv", "Digitalni marketing", "datum", "2025-11-05"),
-            Map.of("id", 2, "naziv", "Osnove programiranja", "datum", "2025-11-12"),
-            Map.of("id", 3, "naziv", "Uvod u projektni menadžment", "datum", "2025-11-20")
-        );
+    @GetMapping public List<Radionica> getAll() { return service.getAll(); }
+    @GetMapping("/{id}") public Radionica getById(@PathVariable Long id) { return service.getById(id); }
+    @PostMapping public Radionica create(@RequestBody Radionica r) { return service.saveOrUpdate(r); }
+    @PutMapping("/{id}") public Radionica update(@PathVariable Long id, @RequestBody Radionica r) {
+        r.setId(id); return service.saveOrUpdate(r);
     }
+    @DeleteMapping("/{id}") public void delete(@PathVariable Long id) { service.delete(id); }
 }
