@@ -1,75 +1,58 @@
-# ✨ Java & Spring Boot
+# Compiled class files
 *.class
-*.jar
-*.war
-*.ear
 
 # Build output
-/target/
-/out/
+target/
+out/
+build/
 
 # Log files
 *.log
 
-# OS-specific
-.DS_Store
-Thumbs.db
-
 # IDE-specific
-/.idea/
-/*.iml
-/.vscode/
-/*.suo
-/*.ntvs*
-/*.njsproj
-/*.sln
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 *.run/
 
-# Maven-specific
-/.mvn/
+# Maven wrapper and internal details
+.mvn/
 mvnw*
 !mvnw
 !mvnw.cmd
 
 # NetBeans
 nbproject/private/
-/build/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
 
-# 🔒 Configuration & Environment files (keep secrets out)
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Sensitive configs — NE SMIJU u repo
 .env
 .env.*
 application.properties
 application.yml
 application-*.yml
 
-# SQL initialization (local only)
-/src/main/resources/data.sql
-/src/main/resources/schema.sql
+# Local SQL stuff
+src/main/resources/data.sql
+src/main/resources/schema.sql
 
-# Editor & temp files
-*.tmp
-*.bak
-*.swp
-*.orig
-*.rej
-
-# Build tools
-.gradle/
-build/
-gradle-app.setting
-
-# Docker & deployment
-docker-compose.*
-Dockerfile
+# Certificates and private keys
 *.pem
 *.crt
 *.key
 
-# Frontend build (ako je frontend u istom repo)
-node_modules/
-build/
-dist/
+# Docker
+docker-compose.*
+Dockerfile
