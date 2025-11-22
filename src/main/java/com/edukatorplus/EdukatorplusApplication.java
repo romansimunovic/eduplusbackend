@@ -1,4 +1,4 @@
-package com.edukatorplus.eduplusbackend;
+package com.edukatorplus;
 
 import com.edukatorplus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
