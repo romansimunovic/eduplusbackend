@@ -10,7 +10,7 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.IOException;
-
+@CrossOrigin(origins = "https://eduplusfrontend-8qgi1vkyx-romansimunovics-projects.vercel.app")
 @RestController
 @RequestMapping("/api/prisustva")
 public class PrisustvoController {
