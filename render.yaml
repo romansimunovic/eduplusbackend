@@ -7,7 +7,13 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/ping
     envVars:
+      - key: JDBC_DATABASE_URL
+        value: jdbc:postgresql://ep-sparkling-poetry-agddtkne-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - key: JDBC_DATABASE_USERNAME
+        value: neondb_owner
+      - key: JDBC_DATABASE_PASSWORD
+        value: tvoja_baza_lozinka
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: JWT_SECRET
-        value: change_me_to_a_very_long_secret_at_least_32_chars
+        value: change_this_to_zbilja_dugi_secret_key
