@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/polaznici")
-@CrossOrigin(origins = {"https://tvoj-frontend.vercel.app", "http://localhost:3000"})
+@CrossOrigin(origins = {"https://eduplusfrontend.vercel.app", "http://localhost:3000"})
 public class PolaznikController {
     @Autowired
     private PolaznikService service;

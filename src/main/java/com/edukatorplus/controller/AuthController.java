@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {"https://tvoj-frontend.vercel.app", "http://localhost:3000"})
+@CrossOrigin(origins = {"https://eduplusfrontend.vercel.app", "http://localhost:3000"})
 public class AuthController {
     @Autowired private UserService service;
     @Autowired private JWTUtil jwtUtil;
