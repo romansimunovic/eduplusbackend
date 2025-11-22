@@ -38,7 +38,8 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                    .allowedOrigins("https://eduplusfrontend-8qgi1vkyx-romansimunovics-projects.vercel.app")
+                    .allowedOrigins("https://eduplusfrontend-j21ehdb93-romansimunovics-projects.vercel.app",
+                                        "https://eduplusfrontend.vercel.app")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*");
             }
