@@ -1,16 +1,36 @@
 package com.edukatorplus.controller;
 
+import com.edukatorplus.model.Polaznik;
+import com.edukatorplus.service.PolaznikService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/polaznici")
+@CrossOrigin(origins = {"https://tvoj-frontend.vercel.app", "http://localhost:3000"})
 public class PolaznikController {
+    @Autowired
+    private PolaznikService service;
 
     @GetMapping
-    public List<Map<String, Object>> getPolaznici() {
-        return List.of(
-            Map.of("id", 1, "ime", "Ana", "prezime", "Marić", "email", "ana.maric@gmail.com", "spol", "Ž", "grad", "Osijek", "status", "student", "telefon", "091234567", "godinaRodenja", 2001),
-            Map.of("id", 2, "ime", "Marko", "prezime", "Ivić", "email", "marko.ivic@gmail.com", "spol", "M", "grad", "Zagreb", "status", "zaposlen", "telefon", "092345678", "godinaRodenja", 1998)
-        );
+    public List<Polaznik> getPolaznici() { return service.getAll(); }
+
+    @GetMapping("/search")
+    public List<Polaznik> search(@RequestParam String q) { return service.search(q); }
+
+    @GetMapping("/{id}")
+    public Polaznik getById(@PathVariable Long id) { return service.getById(id); }
+
+    @PostMapping
+    public Polaznik create(@RequestBody Polaznik p) { return service.saveOrUpdate(p); }
+
+    @PutMapping("/{id}")
+    public Polaznik update(@PathVariable Long id, @RequestBody Polaznik p) {
+        p.setId(id);
+        return service.saveOrUpdate(p);
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) { service.delete(id); }
 }
