@@ -13,7 +13,6 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/prisustva")
-@CrossOrigin(origins = {"https://eduplusfrontend.vercel.app", "http://localhost:3000"})
 public class PrisustvoController {
     @Autowired private PrisustvoService service;
 

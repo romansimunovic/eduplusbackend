@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/radionice")
-@CrossOrigin(origins = {"https://eduplusfrontend.vercel.app", "http://localhost:3000"})
 public class RadionicaController {
     @Autowired private RadionicaService service;
 
