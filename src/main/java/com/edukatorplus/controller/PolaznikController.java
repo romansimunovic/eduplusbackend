@@ -2,8 +2,6 @@ package com.edukatorplus.controller;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
-
-@CrossOrigin(origins = "https://eduplusfrontend-8qgi1vkyx-romansimunovics-projects.vercel.app")
 @RestController
 @RequestMapping("/api/polaznici")
 public class PolaznikController {

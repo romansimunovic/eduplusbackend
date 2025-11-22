@@ -5,7 +5,7 @@ import com.edukatorplus.service.UserService;
 import com.edukatorplus.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-@CrossOrigin(origins = "https://eduplusfrontend-8qgi1vkyx-romansimunovics-projects.vercel.app")
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
